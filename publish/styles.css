@@ -1,0 +1,505 @@
+﻿/* BASELINE */
+html, body {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    background: #111;
+    color: #eee;
+    overflow: hidden;
+}
+
+    body.menu-open {
+        overflow: hidden;
+        height: 100%;
+        position: fixed;
+        width: 100%;
+    }
+
+    body.keyboard-open {
+        position: fixed !important;
+        overflow: hidden !important;
+        width: 100% !important;
+        height: 100% !important;
+        touch-action: none !important;
+    }
+
+/* HIDE NATIVE AUDIO */
+audio {
+    width: 0;
+    height: 0;
+    opacity: 0;
+    position: absolute;
+    pointer-events: none;
+}
+
+/* NOW PLAYING */
+#now-playing {
+    background: #222;
+    padding: 8px;
+    border-bottom: 1px solid #333;
+    font-size: 1.2em;
+}
+
+/* CUSTOM PLAYER */
+#player-container {
+    background: #7c79799c;
+    border: 2px solid #444;
+}
+
+#custom-player {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 8px;
+    margin: 0 2em;
+}
+
+/* BUTTON ROW */
+#player-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+    #player-buttons button {
+        flex: 1;
+        font-size: 1.5em;
+        padding: 0px 8px;
+        background: #444;
+        border: 1px solid #666;
+        color: #fff;
+        border-radius: 15px;
+        width: 100%;
+    }
+
+/* PROGRESS BAR */
+/* PROGRESS BAR */
+#progress-bar {
+    width: 100%;
+    height: 16px;
+    border-radius: 12px;
+    overflow: hidden;
+    /* dark recessed base, like volume track */
+    background: #403b69;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.45), inset 0 -1px 2px rgba(255,255,255,0.15);
+}
+
+/* FILLED PART (before position) */
+#progress-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: inherit;
+    /* raised, lighter part (like volume green) */
+    background: #99d399;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.6), inset 0 2px 3px rgba(255,255,255,0.35), inset 0 -2px 3px rgba(0,0,0,0.4);
+}
+
+
+/* TIME DISPLAY */
+#time-display {
+    font-size: 1.3em;
+    text-align: center;
+}
+
+/* TREE */
+#tree-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px;
+    font-size: 1.6em;
+}
+
+/* LOGIN MODAL */
+#login-box input,
+#login-box button {
+    font-size: 1.6em;
+    color: black;
+    margin: 10px 20px;
+}
+
+/* ICONS */
+.folder-icon {
+    width: 1em;
+    height: 1em;
+}
+
+.book-cover {
+    height: 5em;
+}
+
+/* LOADING OVERLAY — KEEP EXACTLY AS BASELINE */
+#loading-overlay {
+    position: absolute;
+    top: 0px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 80vw;
+    padding: 8px 16px;
+    background: rgb(255 255 255 / 65%);
+    color: #de0e0e;
+    border-radius: 10px;
+    font-size: 1.2em;
+    text-align: center;
+    display: none;
+    z-index: 9999;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    transition: opacity 0.2s ease;
+}
+
+    #loading-overlay::after {
+        content: "";
+        display: inline-block;
+        width: 1em;
+        height: 1em;
+        margin-left: 8px;
+        border: 3px solid #de0e0e;
+        border-top-color: transparent;
+        border-radius: 50%;
+        animation: spin 0.7s linear infinite;
+    }
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* HEADER BAR */
+#header-bar {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 6px 10px;
+    background: #222;
+    border-bottom: 1px solid #333;
+    min-height: 2.2em;
+}
+
+#menu-btn {
+    padding: 4px 10px;
+    background: #444;
+    border: 1px solid #666;
+    color: #fff;
+    border-radius: 4px;
+    font-size: 1.4em;
+    line-height: 1em;
+}
+
+#now-playing {
+    flex: 1;
+    font-size: 1.2em;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    line-height: 1.2em;
+}
+
+/* SIDE MENU */
+#side-menu {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 60%;
+    height: 100%;
+    background: #f5f5f5b3;
+    border-left: 1px solid #1e0be7;
+    padding: 0px 15px 0px 3px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    transition: right 0.25s ease;
+    z-index: 9999;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+    #side-menu button {
+        padding: 10px;
+        background: #444;
+        border: 1px solid #666;
+        color: #fff;
+        border-radius: 6px;
+        font-size: 1.2em;
+    }
+
+    #side-menu.open {
+        right: 0;
+    }
+
+        #side-menu.open::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.4);
+            z-index: -1;
+        }
+
+#menu-close-btn {
+    align-self: flex-end;
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 1.6em;
+    padding: 0;
+    margin-bottom: 10px;
+}
+
+/* TREE STRUCTURE */
+.tree-node {
+    position: relative;
+    padding-left: 0.5em;
+    margin-left: 0.5em;
+    border-left: 1px solid rgba(255,255,255,0.45);
+}
+
+.tree-row {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 0;
+}
+
+    .tree-row::before {
+        content: "";
+        position: absolute;
+        left: -0.5em;
+        top: 0.9em;
+        width: 0.5em;
+        height: 1px;
+        background: rgba(255,255,255,0.45);
+    }
+
+#tree-container > .tree-row::before {
+    display: none;
+}
+
+.folder-name {
+    flex-grow: 1;
+    word-break: break-all;
+}
+
+/* FILE ITEMS */
+.file-item {
+    position: relative;
+    padding-left: 0.1em;
+    margin-left: 0.5em;
+    line-height: 1.3em;
+    word-break: break-all;
+}
+
+    .file-item::before {
+        content: "";
+        position: absolute;
+        left: -0.99em;
+        width: 0.7em;
+        top: 0.65em;
+        height: 1px;
+        background: rgba(255,255,255,0.45);
+    }
+
+/* ACTIVE FILE */
+.file-active {
+    font-weight: bold;
+}
+
+/* SEARCH HIGHLIGHT */
+.tree-highlight {
+    background: rgba(255, 255, 0, 0.25);
+    border-radius: 4px;
+}
+
+/* NOW PLAYING HIGHLIGHT */
+.now-playing-item {
+    background: rgba(0, 150, 255, 0.25);
+    border-left: 3px solid #00aaff;
+    border-radius: 4px;
+}
+
+/* SEARCH BOX */
+#tree-search {
+    color: #0d0d0d;
+    font-size: 1.5em;
+    padding: 2px 0 2px 4px;
+    border-radius: 5px;
+}
+
+/* VOLUME CONTROL */
+#volume-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 4px 0 8px 0;
+}
+
+.vol-icon {
+    font-size: 1.8em;
+    color: #111;
+    background: black;
+    border-radius: 50%;
+    width: 1.8em;
+    height: 1.8em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    padding: 0;
+}
+
+/* RANGE */
+#volumeControl {
+    -webkit-appearance: none;
+    appearance: none;
+    flex: 1;
+    width: 100%;
+    height: 10px;
+    border-radius: 6px;
+    outline: none;
+    margin: 0;
+    background: linear-gradient(to right, #99d399 0%, #99d399 var(--val, 50%), #403b69 var(--val, 50%), #403b69 100%);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.45), inset 0 -1px 2px rgba(255,255,255,0.15);
+}
+
+    #volumeControl::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 20px;
+        height: 20px;
+        background: #00cc00;
+        border: 4px solid red;
+        border-radius: 50%;
+        cursor: pointer;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.6), inset 0 2px 3px rgba(255,255,255,0.35), inset 0 -2px 3px rgba(0,0,0,0.4);
+    }
+
+    #volumeControl::-moz-range-thumb {
+        width: 20px;
+        height: 20px;
+        background: #00cc00;
+        border: 4px solid red;
+        border-radius: 50%;
+        cursor: pointer;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.6), inset 0 2px 3px rgba(255,255,255,0.35), inset 0 -2px 3px rgba(0,0,0,0.4);
+    }
+
+    #volumeControl::-moz-range-track {
+        height: 10px;
+        border-radius: 6px;
+        background: #403b69;
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.45), inset 0 -1px 2px rgba(255,255,255,0.15);
+    }
+
+/* ℹ BUTTON */
+.desc-icon-inline {
+    background: #1e6bff82;
+    color: white;
+    border-radius: 50%;
+    border: none;
+    width: 1em;
+    min-width: 1em;
+    height: 1em;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    flex-shrink: 0;
+    box-sizing: border-box;
+    font-size: 1em;
+}
+
+
+/* BIG COVER */
+.book-cover-wrapper {
+    margin-top: 6px;
+}
+
+.book-cover {
+    max-width: 150px;
+    display: block;
+}
+
+/* DESCRIPTION MODAL */
+#desc-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.7);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+}
+
+#desc-modal-content {
+    background: #222;
+    padding: 20px;
+    border-radius: 10px;
+    /* max-width: 90vw; */
+    max-height: 99vh;
+    overflow-y: auto;
+    color: #eee;
+    font-size: 1.2em;
+    position: relative;
+}
+
+#desc-close-btn {
+    position: fixed;
+    top: 23px;
+    right: 35px;
+    font-size: 1.5em;
+    background: none;
+    border: none;
+    color: #eee;
+    cursor: pointer;
+    border-radius: 50%;
+    background: #733636;
+    width: 1.5em;
+    height: 1.5em;
+}
+
+/* === FIX: PLAY BUTTON = 33% WIDTH === */
+#btn-back,
+#btn-forward,
+#play-wrapper {
+    flex: 1;
+}
+
+#play-wrapper {
+    position: relative;
+    display: flex;
+}
+
+#btn-play {
+    width: 100%;
+}
+
+
+#desc-text {
+    white-space: pre-wrap !important; /* сохраняет \n, но разрешает переносы */
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    overflow-x: hidden !important;
+    background: #f7f4e9 !important; /* мягкий бумажный белый */
+    color: #050505 !important; /* глубокий чёрный текст */
+    padding: 1em !important; /* как поля страницы */
+    border-radius: 6px !important; /* чуть мягче */
+    font-family: "Georgia", "Times New Roman", serif !important; /* книжный шрифт */
+    line-height: 1.2 !important; /* читаемость */
+    font-size: 1.3em !important; /* чуть крупнее */
+}
+ 

@@ -6,7 +6,7 @@
 # Build outputs
 bin/
 obj/
-publish/
+
 
 # .NET
 *.pdb
