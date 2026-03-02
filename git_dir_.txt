@@ -1,0 +1,341 @@
+ Volume in drive E is Store
+ Volume Serial Number is 36B2-656D
+
+ Directory of E:\vs2022\mvc\AudioPWA\.git
+
+03/02/2026  11:51 AM    <DIR>          ..
+03/02/2026  11:48 AM                39 COMMIT_EDITMSG
+03/02/2026  11:48 AM               112 config
+03/02/2026  11:47 AM                73 description
+03/02/2026  11:47 AM                23 HEAD
+03/02/2026  11:47 AM    <DIR>          hooks
+03/02/2026  11:48 AM             2,639 index
+03/02/2026  11:47 AM    <DIR>          info
+03/02/2026  11:47 AM    <DIR>          logs
+03/02/2026  11:47 AM    <DIR>          objects
+03/02/2026  11:47 AM    <DIR>          refs
+               5 File(s)          2,886 bytes
+
+ Directory of E:\vs2022\mvc\AudioPWA\.git\hooks
+
+03/02/2026  11:47 AM    <DIR>          .
+03/02/2026  11:47 AM               478 applypatch-msg.sample
+03/02/2026  11:47 AM               896 commit-msg.sample
+03/02/2026  11:47 AM             4,726 fsmonitor-watchman.sample
+03/02/2026  11:47 AM               189 post-update.sample
+03/02/2026  11:47 AM               424 pre-applypatch.sample
+03/02/2026  11:47 AM             1,649 pre-commit.sample
+03/02/2026  11:47 AM               416 pre-merge-commit.sample
+03/02/2026  11:47 AM             1,374 pre-push.sample
+03/02/2026  11:47 AM             4,898 pre-rebase.sample
+03/02/2026  11:47 AM               544 pre-receive.sample
+03/02/2026  11:47 AM             1,492 prepare-commit-msg.sample
+03/02/2026  11:47 AM             2,783 push-to-checkout.sample
+03/02/2026  11:47 AM             2,308 sendemail-validate.sample
+03/02/2026  11:47 AM             3,650 update.sample
+              14 File(s)         25,827 bytes
+
+ Directory of E:\vs2022\mvc\AudioPWA\.git\info
+
+03/02/2026  11:47 AM    <DIR>          .
+03/02/2026  11:47 AM               240 exclude
+               1 File(s)            240 bytes
+
+ Directory of E:\vs2022\mvc\AudioPWA\.git\logs
+
+03/02/2026  11:47 AM    <DIR>          .
+03/02/2026  11:47 AM               183 HEAD
+03/02/2026  11:47 AM    <DIR>          refs
+               1 File(s)            183 bytes
+
+ Directory of E:\vs2022\mvc\AudioPWA\.git\logs\refs
+
+03/02/2026  11:47 AM    <DIR>          .
+03/02/2026  11:47 AM    <DIR>          ..
+03/02/2026  11:47 AM    <DIR>          heads
+               0 File(s)              0 bytes
+
+ Directory of E:\vs2022\mvc\AudioPWA\.git\logs\refs\heads
+
+03/02/2026  11:47 AM    <DIR>          .
+03/02/2026  11:47 AM    <DIR>          ..
+03/02/2026  11:47 AM               183 master
+               1 File(s)            183 bytes
+
+ Directory of E:\vs2022\mvc\AudioPWA\.git\objects
+
+03/02/2026  11:47 AM    <DIR>          .
+03/02/2026  11:47 AM    <DIR>          07
+03/02/2026  11:47 AM    <DIR>          17
+03/02/2026  11:47 AM    <DIR>          24
+03/02/2026  11:47 AM    <DIR>          35
+03/02/2026  11:47 AM    <DIR>          3e
+03/02/2026  11:47 AM    <DIR>          3f
+03/02/2026  11:47 AM    <DIR>          40
+03/02/2026  11:47 AM    <DIR>          45
+03/02/2026  11:47 AM    <DIR>          5d
+03/02/2026  11:47 AM    <DIR>          6e
+03/02/2026  11:47 AM    <DIR>          73
+03/02/2026  11:47 AM    <DIR>          74
+03/02/2026  11:47 AM    <DIR>          7e
+03/02/2026  11:47 AM    <DIR>          7f
+03/02/2026  11:47 AM    <DIR>          87
+03/02/2026  11:47 AM    <DIR>          96
+03/02/2026  11:47 AM    <DIR>          a0
+03/02/2026  11:47 AM    <DIR>          a9
+03/02/2026  11:47 AM    <DIR>          ad
+03/02/2026  11:47 AM    <DIR>          b2
+03/02/2026  11:47 AM    <DIR>          b8
+03/02/2026  11:47 AM    <DIR>          b9
+03/02/2026  11:47 AM    <DIR>          c3
+03/02/2026  11:47 AM    <DIR>          d0
+03/02/2026  11:47 AM    <DIR>          da
+03/02/2026  11:47 AM    <DIR>          dd
+03/02/2026  11:47 AM    <DIR>          f2
+03/02/2026  11:47 AM    <DIR>          f5
+03/02/2026  11:47 AM    <DIR>          fa
+03/02/2026  11:47 AM    <DIR>          info
+03/02/2026  11:47 AM    <DIR>          pack
+               0 File(s)              0 bytes
+
+ Directory of E:\vs2022\mvc\AudioPWA\.git\objects\07
+
+03/02/2026  11:47 AM    <DIR>          .
+03/02/2026  11:47 AM    <DIR>          ..
+03/02/2026  11:47 AM             3,353 5dbd405b463a24e5b6cb0cd8d554d799dec811
+               1 File(s)          3,353 bytes
+
+ Directory of E:\vs2022\mvc\AudioPWA\.git\objects\17
+
+03/02/2026  11:47 AM    <DIR>          .
+03/02/2026  11:47 AM    <DIR>          ..
+03/02/2026  11:47 AM            25,281 484599fad516f8af677d8936a928fb282015ba
+               1 File(s)         25,281 bytes
+
+ Directory of E:\vs2022\mvc\AudioPWA\.git\objects\24
+
+03/02/2026  11:47 AM    <DIR>          .
+03/02/2026  11:47 AM    <DIR>          ..
+03/02/2026  11:47 AM               185 aa0bfa56b063976fd4ecb684f78c46526fa16e
+               1 File(s)            185 bytes
+
+ Directory of E:\vs2022\mvc\AudioPWA\.git\objects\35
+
+03/02/2026  11:47 AM    <DIR>          .
+03/02/2026  11:47 AM    <DIR>          ..
+03/02/2026  11:47 AM                66 c415c0397ea5d2790a7a1d7e0196cbbfa8bbac
+               1 File(s)             66 bytes
+
+ Directory of E:\vs2022\mvc\AudioPWA\.git\objects\3e
+
+03/02/2026  11:47 AM    <DIR>          .
+03/02/2026  11:47 AM    <DIR>          ..
+03/02/2026  11:47 AM               169 1e72ea7e9d8f887eb456bdb6c60b635f5cdc9e
+               1 File(s)            169 bytes
+
+ Directory of E:\vs2022\mvc\AudioPWA\.git\objects\3f
+
+03/02/2026  11:47 AM    <DIR>          .
+03/02/2026  11:47 AM    <DIR>          ..
+03/02/2026  11:47 AM               179 5f9cb043906fa25866b0e396127ba9f80d4a11
+               1 File(s)            179 bytes
+
+ Directory of E:\vs2022\mvc\AudioPWA\.git\objects\40
+
+03/02/2026  11:47 AM    <DIR>          .
+03/02/2026  11:47 AM    <DIR>          ..
+03/02/2026  11:47 AM             2,691 25a0f38dd24ac5cde44ce459681569348d5f8c
+               1 File(s)          2,691 bytes
+
+ Directory of E:\vs2022\mvc\AudioPWA\.git\objects\45
+
+03/02/2026  11:47 AM    <DIR>          .
+03/02/2026  11:47 AM    <DIR>          ..
+03/02/2026  11:47 AM             1,961 5062f2b2b2bef1f0aba18d53a776063672f59a
+               1 File(s)          1,961 bytes
+
+ Directory of E:\vs2022\mvc\AudioPWA\.git\objects\5d
+
+03/02/2026  11:47 AM    <DIR>          .
+03/02/2026  11:47 AM    <DIR>          ..
+03/02/2026  11:47 AM         1,515,626 71bc2941fc07dca4c8413577f3a851aff5c64c
+03/02/2026  11:47 AM             5,083 fdff237db45f8e0e4b8e0a0c35362c012c914a
+               2 File(s)      1,520,709 bytes
+
+ Directory of E:\vs2022\mvc\AudioPWA\.git\objects\6e
+
+03/02/2026  11:47 AM    <DIR>          .
+03/02/2026  11:47 AM    <DIR>          ..
+03/02/2026  11:47 AM               759 ce29de68d0f22eb44c671cb913dddb0233085c
+               1 File(s)            759 bytes
+
+ Directory of E:\vs2022\mvc\AudioPWA\.git\objects\73
+
+03/02/2026  11:47 AM    <DIR>          .
+03/02/2026  11:47 AM    <DIR>          ..
+03/02/2026  11:47 AM               156 27422337d281a3bc3ffd65b39c0fd2ca8dbbea
+               1 File(s)            156 bytes
+
+ Directory of E:\vs2022\mvc\AudioPWA\.git\objects\74
+
+03/02/2026  11:47 AM    <DIR>          .
+03/02/2026  11:47 AM    <DIR>          ..
+03/02/2026  11:47 AM               649 c9cad37bcb24a7126a88f65a2e984582c6344c
+               1 File(s)            649 bytes
+
+ Directory of E:\vs2022\mvc\AudioPWA\.git\objects\7e
+
+03/02/2026  11:47 AM    <DIR>          .
+03/02/2026  11:47 AM    <DIR>          ..
+03/02/2026  11:47 AM               181 db2b280d1b8df70215f0e4740cf5f3c986d196
+               1 File(s)            181 bytes
+
+ Directory of E:\vs2022\mvc\AudioPWA\.git\objects\7f
+
+03/02/2026  11:47 AM    <DIR>          .
+03/02/2026  11:47 AM    <DIR>          ..
+03/02/2026  11:47 AM                98 a1dea0baeeae96eb14af02924b45a4dfb792b3
+               1 File(s)             98 bytes
+
+ Directory of E:\vs2022\mvc\AudioPWA\.git\objects\87
+
+03/02/2026  11:47 AM    <DIR>          .
+03/02/2026  11:47 AM    <DIR>          ..
+03/02/2026  11:47 AM           153,832 060bf49e76cc73ddc11427d6b593491ebc5245
+03/02/2026  11:47 AM               218 0aed001205b7d265f1ee8a342868fb435fe191
+               2 File(s)        154,050 bytes
+
+ Directory of E:\vs2022\mvc\AudioPWA\.git\objects\96
+
+03/02/2026  11:47 AM    <DIR>          .
+03/02/2026  11:47 AM    <DIR>          ..
+03/02/2026  11:47 AM               158 a3cec0fa3cb31e9de713e07a4abb4a496e85c1
+               1 File(s)            158 bytes
+
+ Directory of E:\vs2022\mvc\AudioPWA\.git\objects\a0
+
+03/02/2026  11:47 AM    <DIR>          .
+03/02/2026  11:47 AM    <DIR>          ..
+03/02/2026  11:47 AM             1,859 afe5639a917d89eb66dee5e5fffc01e2d89402
+               1 File(s)          1,859 bytes
+
+ Directory of E:\vs2022\mvc\AudioPWA\.git\objects\a9
+
+03/02/2026  11:47 AM    <DIR>          .
+03/02/2026  11:47 AM    <DIR>          ..
+03/02/2026  11:47 AM               176 6c5730b8324ed16b189d9758cf4361c98c34c0
+               1 File(s)            176 bytes
+
+ Directory of E:\vs2022\mvc\AudioPWA\.git\objects\ad
+
+03/02/2026  11:47 AM    <DIR>          .
+03/02/2026  11:47 AM    <DIR>          ..
+03/02/2026  11:47 AM             1,181 d5df583ecbe7933d37564ded4c4e015fe44d12
+               1 File(s)          1,181 bytes
+
+ Directory of E:\vs2022\mvc\AudioPWA\.git\objects\b2
+
+03/02/2026  11:47 AM    <DIR>          .
+03/02/2026  11:47 AM    <DIR>          ..
+03/02/2026  11:47 AM               779 5d14f9decf2cd2306433366c147000528356c9
+               1 File(s)            779 bytes
+
+ Directory of E:\vs2022\mvc\AudioPWA\.git\objects\b8
+
+03/02/2026  11:47 AM    <DIR>          .
+03/02/2026  11:47 AM    <DIR>          ..
+03/02/2026  11:47 AM               364 30a8b68ebd563918afd51c7d4ab7acdc1eef07
+               1 File(s)            364 bytes
+
+ Directory of E:\vs2022\mvc\AudioPWA\.git\objects\b9
+
+03/02/2026  11:47 AM    <DIR>          .
+03/02/2026  11:47 AM    <DIR>          ..
+03/02/2026  11:47 AM             4,847 29c60aa0c3ce40ea9bd38f0aa6c1d45a52859e
+               1 File(s)          4,847 bytes
+
+ Directory of E:\vs2022\mvc\AudioPWA\.git\objects\c3
+
+03/02/2026  11:47 AM    <DIR>          .
+03/02/2026  11:47 AM    <DIR>          ..
+03/02/2026  11:47 AM             2,187 f2c235a37118ab08464c9578dea0b65519bc5f
+               1 File(s)          2,187 bytes
+
+ Directory of E:\vs2022\mvc\AudioPWA\.git\objects\d0
+
+03/02/2026  11:47 AM    <DIR>          .
+03/02/2026  11:47 AM    <DIR>          ..
+03/02/2026  11:47 AM                60 3d67e6154a56e681b7162ba2aec97eae75497f
+               1 File(s)             60 bytes
+
+ Directory of E:\vs2022\mvc\AudioPWA\.git\objects\da
+
+03/02/2026  11:47 AM    <DIR>          .
+03/02/2026  11:47 AM    <DIR>          ..
+03/02/2026  11:47 AM               675 6e960b8d1e55c546e22c9868460f3b2c2027a0
+               1 File(s)            675 bytes
+
+ Directory of E:\vs2022\mvc\AudioPWA\.git\objects\dd
+
+03/02/2026  11:47 AM    <DIR>          .
+03/02/2026  11:47 AM    <DIR>          ..
+03/02/2026  11:47 AM               145 4e54b91c58b17a701b20c296c526c0c0d5b531
+               1 File(s)            145 bytes
+
+ Directory of E:\vs2022\mvc\AudioPWA\.git\objects\f2
+
+03/02/2026  11:47 AM    <DIR>          .
+03/02/2026  11:47 AM    <DIR>          ..
+03/02/2026  11:47 AM               439 0ecce9796cfebb0f0cc50ee3fed90716fa7f9a
+03/02/2026  11:47 AM             3,442 e629c16d8e872b71a3ac3cc8246fffd7e45c11
+               2 File(s)          3,881 bytes
+
+ Directory of E:\vs2022\mvc\AudioPWA\.git\objects\f5
+
+03/02/2026  11:47 AM    <DIR>          .
+03/02/2026  11:47 AM    <DIR>          ..
+03/02/2026  11:47 AM             1,438 05da1b83f4b5afc2cd9e4d6fa1ba46bbd26fce
+               1 File(s)          1,438 bytes
+
+ Directory of E:\vs2022\mvc\AudioPWA\.git\objects\fa
+
+03/02/2026  11:47 AM    <DIR>          .
+03/02/2026  11:47 AM    <DIR>          ..
+03/02/2026  11:47 AM               651 e9cfefa971636038d95909bb4fd0715b672af7
+               1 File(s)            651 bytes
+
+ Directory of E:\vs2022\mvc\AudioPWA\.git\objects\info
+
+03/02/2026  11:47 AM    <DIR>          .
+03/02/2026  11:47 AM    <DIR>          ..
+               0 File(s)              0 bytes
+
+ Directory of E:\vs2022\mvc\AudioPWA\.git\objects\pack
+
+03/02/2026  11:47 AM    <DIR>          .
+03/02/2026  11:47 AM    <DIR>          ..
+               0 File(s)              0 bytes
+
+ Directory of E:\vs2022\mvc\AudioPWA\.git\refs
+
+03/02/2026  11:47 AM    <DIR>          .
+03/02/2026  11:47 AM    <DIR>          heads
+03/02/2026  11:47 AM    <DIR>          tags
+               0 File(s)              0 bytes
+
+ Directory of E:\vs2022\mvc\AudioPWA\.git\refs\heads
+
+03/02/2026  11:47 AM    <DIR>          .
+03/02/2026  11:47 AM    <DIR>          ..
+03/02/2026  11:47 AM                41 master
+               1 File(s)             41 bytes
+
+ Directory of E:\vs2022\mvc\AudioPWA\.git\refs\tags
+
+03/02/2026  11:47 AM    <DIR>          .
+03/02/2026  11:47 AM    <DIR>          ..
+               0 File(s)              0 bytes
+
+     Total Files Listed:
+              55 File(s)      1,758,248 bytes
+             116 Dir(s)  209,741,099,008 bytes free
