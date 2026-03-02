@@ -1,0 +1,24 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# Build outputs
+bin/
+obj/
+publish/
+
+# .NET
+*.pdb
+*.cache
+*.dll
+*.exe
+
+# PWA / Web
+node_modules/
+dist/
+*.log
+
+# OS junk
+Thumbs.db
+.DS_Store
