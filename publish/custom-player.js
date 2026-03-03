@@ -186,11 +186,11 @@ setInterval(() => {
     if (!audio.duration) return;
 
     // stuck at end (Chrome dropped onended)
-    if (audio.currentTime >= audio.duration - 0.5) {
-        if (typeof playNextFromDom === "function") {
-            playNextFromDom();
-        }
-    }
+    //if (audio.currentTime >= audio.duration - 0.5) {
+    //    if (typeof playNextFromDom === "function") {
+    //        playNextFromDom();
+    //    }
+    //}
 }, 1000);
 
 /* === VOLUME TRACK INIT === */
@@ -201,3 +201,12 @@ audio.addEventListener("volumechange", updateVolumeTrack);
 
 // начальная установка
 updateVolumeTrack();
+
+function updateMenuEmail() {
+    const emailBox = document.getElementById("user-email");
+    const savedEmail = localStorage.getItem("ab_email");
+
+    emailBox.textContent = savedEmail ? savedEmail : "";
+}
+document.addEventListener("DOMContentLoaded", updateMenuEmail);
+

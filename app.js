@@ -103,7 +103,7 @@ document.getElementById("login-btn").onclick = async () => {
 
     localStorage.setItem("ab_userId", userId);
     localStorage.setItem("ab_email", email);
-
+    updateMenuEmail();
     hideLogin();
     loadProgress();
 };
@@ -117,6 +117,8 @@ function initLogin() {
         userEmail = savedEmail;
         hideLogin();
         loadProgress();
+      
+
     } else {
         showLogin();
     }

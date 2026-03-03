@@ -502,4 +502,14 @@ audio {
     line-height: 1.2 !important; /* читаемость */
     font-size: 1.3em !important; /* чуть крупнее */
 }
- 
+
+#user-email {
+    background: #624dbe82;
+    border-radius: 5px;
+    height: 2em;
+    padding: 5px;
+    text-align: center;
+    word-break: break-all;
+    height: auto;
+    font-size:1.2em;
+}
