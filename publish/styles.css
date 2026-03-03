@@ -513,6 +513,17 @@ audio {
     height: auto;
     font-size:1.2em;
 }
+ 
 .arrow {
-    font-size: 1.6em;
+    font-size: 1.1em;
+    background-color: #1e6bff82;
+    border-radius: 50%;
+    width: 1.2em;
+    height: 1.2em;
+    border: 1px solid white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    cursor: pointer;
 }

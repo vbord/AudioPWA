@@ -195,7 +195,7 @@ function renderTree(node, container, currentPath) {
 
         const arrow = document.createElement("span");
         arrow.className = "arrow";
-        arrow.textContent = "►";
+        arrow.textContent = "＋";
 
         const name = document.createElement("span");
         name.className = "folder-name";
@@ -235,7 +235,7 @@ function renderTree(node, container, currentPath) {
 
         arrow.onclick = async () => {
             if (childContainer.style.display === "none") {
-                arrow.textContent = "▼";
+                arrow.textContent = "－";
                 childContainer.style.display = "block";
 
                 const coverUrl = await loadCover(fullPath);
@@ -250,13 +250,13 @@ function renderTree(node, container, currentPath) {
 
                 loadFilesInto(fullPath, mp3Container);
             } else {
-                arrow.textContent = "►";
+                arrow.textContent = "＋";
                 childContainer.style.display = "none";
             }
         };
 
         name.onclick = async () => {
-            arrow.textContent = "▼";
+            arrow.textContent = "－";
             childContainer.style.display = "block";
 
             const coverUrl = await loadCover(fullPath);
@@ -506,7 +506,7 @@ async function expandAndPlay(bookPath, fileName, position) {
         const nextContainer = row.nextElementSibling;
 
         if (nextContainer.style.display === "none") {
-            arrow.textContent = "▼";
+            arrow.textContent = "－";
             nextContainer.style.display = "block";
         }
 
