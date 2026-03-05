@@ -9,7 +9,7 @@ async function openParents(row) {
 
         if (hasSubfolders) {
             const arrow = row.querySelector(".arrow");
-            arrow.textContent = "▼";
+            arrow.textContent = "－";
             node.style.display = "block";
         }
     }
@@ -24,7 +24,7 @@ async function openParents(row) {
 
         if (hasSubfolders) {
             const arrow = parentRow.querySelector(".arrow");
-            arrow.textContent = "▼";
+            arrow.textContent = "－";
             parent.style.display = "block";
         }
 
@@ -45,10 +45,10 @@ function collapseUnmatchedRoots() {
         const arrow = row.querySelector(".arrow");
 
         if (hasMatch) {
-            arrow.textContent = "▼";
+            arrow.textContent = "－";
             root.style.display = "block";
         } else {
-            arrow.textContent = "►";
+            arrow.textContent = "＋";
             root.style.display = "none";
         }
     });
