@@ -50,7 +50,6 @@ audio {
 /* CUSTOM PLAYER */
 #player-container {
     background: #7c79799c;
-    
 }
 
 #custom-player {
@@ -123,6 +122,7 @@ audio {
     color: black;
     margin: 10px 20px;
 }
+
 #login-modal {
     position: fixed;
     top: 0;
@@ -145,7 +145,7 @@ audio {
     height: 1em;
 }
 
- 
+
 
 /* LOADING OVERLAY — KEEP EXACTLY AS BASELINE */
 #loading-overlay {
@@ -491,7 +491,7 @@ audio {
 #play-wrapper {
     width: 40%;
 }
- 
+
 
 
 #play-wrapper {
@@ -526,7 +526,7 @@ audio {
     text-align: center;
     word-break: break-all;
     height: auto;
-    font-size:1.2em;
+    font-size: 1.2em;
 }
 
 .arrow {

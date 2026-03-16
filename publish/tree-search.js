@@ -62,6 +62,7 @@ function scrollToInTree(row) {
 
     container.scrollTop += (rect.top - crect.top) - container.clientHeight / 2;
 }
+
 // ---------------- SEARCH IN TREE ----------------
 
 // основной поиск — только по папкам
@@ -93,54 +94,22 @@ async function searchTree(term) {
     }
 }
 
-// ---------------- FIND NEXT BOOK ----------------
+/* =========================================================================
+   NEXT BOOK = NEXT SIBLING ONLY (no climbing)
+   -------------------------------------------------------------------------
+   Rule:
+   • If there’s a next sibling under the same parent container, use it.
+   • Otherwise, return null (do NOT climb up).
+   ========================================================================= */
 
-function getNextBookPath(currentBookPath) {
-    const rows = [...document.querySelectorAll(".tree-row")];
-    const names = rows.map(r => r.querySelector(".folder-name").textContent);
-
-    const parts = currentBookPath.split("/");
-    const currentName = parts[parts.length - 1];
-
-    const idx = names.indexOf(currentName);
-    if (idx === -1) return null;
-
-    if (idx < names.length - 1) {
-        return findFullBookPath(names[idx + 1]);
-    }
-
-    return findFullBookPath(names[0]);
-}
-
-function findFullBookPath(name) {
-    const row = [...document.querySelectorAll(".tree-row")]
-        .find(r => r.querySelector(".folder-name").textContent === name);
-
-    if (!row) return null;
-
-    let path = name;
-    let parent = row.parentElement;
-
-    while (parent && parent.classList.contains("tree-node")) {
-        const parentRow = parent.previousElementSibling;
-        if (!parentRow) break;
-
-        const parentName = parentRow.querySelector(".folder-name").textContent;
-        path = parentName + "/" + path;
-
-        parent = parentRow.parentElement;
-    }
-
-    return path;
-}
-
+/** Build a full "A/B/C" path from a .tree-row by walking up parent .tree-node levels. */
 function getFullPathFromRow(row) {
     let name = row.querySelector(".folder-name").textContent;
     let path = name;
 
-    let parent = row.parentElement;
+    let parent = row.parentElement; // .tree-node or #tree-container
 
-    while (parent && parent.classList.contains("tree-node")) {
+    while (parent && parent.classList && parent.classList.contains("tree-node")) {
         const parentRow = parent.previousElementSibling;
         if (!parentRow) break;
 
@@ -151,4 +120,64 @@ function getFullPathFromRow(row) {
     }
 
     return path;
+}
+
+/** Return the .tree-row for a given full path like "A/B/C". */
+function getRowByPath(fullPath) {
+    if (!fullPath) return null;
+    const parts = fullPath.split("/");
+    let container = treeContainer;
+    let finalRow = null;
+
+    for (const part of parts) {
+        const rows = [...container.children].filter(el => el.classList.contains("tree-row"));
+        finalRow = rows.find(r => r.querySelector(".folder-name")?.textContent === part);
+        if (!finalRow) return null; // segment not found
+
+        // go down to this row's children container for the next segment
+        const nextContainer = finalRow.nextElementSibling; // .tree-node
+        container = nextContainer || container;
+    }
+
+    return finalRow;
+}
+
+/** Get direct child rows (.tree-row) of a given container (.tree-node or #tree-container). */
+function getDirectRows(container) {
+    return [...container.children].filter(el => el.classList.contains("tree-row"));
+}
+
+/**
+ * Next book path under the SAME parent container.
+ * If there is no next sibling, returns null (no climbing).
+ */
+function getNextBookPath(currentBookPath) {
+    const currentRow = getRowByPath(currentBookPath);
+    if (!currentRow) return null;
+
+    const parentContainer = currentRow.parentElement; // .tree-node or #tree-container
+    const siblings = getDirectRows(parentContainer);
+    const idx = siblings.indexOf(currentRow);
+
+    if (idx !== -1 && idx < siblings.length - 1) {
+        const nextSiblingRow = siblings[idx + 1];
+        return getFullPathFromRow(nextSiblingRow);
+    }
+
+    // No next sibling at this level -> stop (do NOT climb).
+    return null;
+}
+
+// ---------------- (legacy-compatible) keep the name used elsewhere ----------------
+function findFullBookPath(name) {
+    // In case some older code still calls this helper by folder name only,
+    // fall back to locating the first visible row with that name at ANY level.
+    const row = [...document.querySelectorAll(".tree-row")]
+        .find(r => r.querySelector(".folder-name").textContent === name);
+    return row ? getFullPathFromRow(row) : null;
+}
+
+function getFullPathFromRowCompat(row) {
+    // Alias to preserve compatibility if referenced elsewhere
+    return getFullPathFromRow(row);
 }

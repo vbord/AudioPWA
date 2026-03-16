@@ -117,8 +117,6 @@ function initLogin() {
         userEmail = savedEmail;
         hideLogin();
         loadProgress();
-      
-
     } else {
         showLogin();
     }
@@ -146,6 +144,12 @@ async function loadBooks() {
 
     treeContainer.innerHTML = "";
     renderTree(tree, treeContainer, "");
+
+    // NEW: After tree refresh, auto-open current folder (if any) and re-mark
+    if (currentBook) {
+        // slight delay to ensure DOM is attached
+        setTimeout(() => openCurrentFolderAndRemark(), 0);
+    }
 }
 
 function buildTree(paths) {
@@ -169,7 +173,6 @@ async function loadCover(bookPath) {
     if (!cover) return null;
     return `https://slava.localto.net/Uploads/Audio/ABOOKS/${cover}`;
 }
-
 
 // ---------------- TREE RENDERING ----------------
 
@@ -248,7 +251,13 @@ function renderTree(node, container, currentPath) {
                     coverWrapper.style.display = "none";
                 }
 
-                loadFilesInto(fullPath, mp3Container);
+                await loadFilesInto(fullPath, mp3Container);
+
+                // NEW: if this is the current book, re-mark now-playing
+                if (currentBook === fullPath && currentFile) {
+                    markNowPlaying(fullPath, currentFile, { scroll: false });
+                    highlightFile(currentFile);
+                }
             } else {
                 arrow.textContent = "＋";
                 childContainer.style.display = "none";
@@ -272,6 +281,12 @@ function renderTree(node, container, currentPath) {
             document.querySelectorAll(".file-item").forEach(el => el.remove());
 
             await loadFilesInto(fullPath, mp3Container);
+
+            // NEW: if this is the current book, re-mark now-playing
+            if (currentBook === fullPath && currentFile) {
+                markNowPlaying(fullPath, currentFile, { scroll: false });
+                highlightFile(currentFile);
+            }
 
             setTimeout(() => autoPlayBook(fullPath), 200);
         };
@@ -339,6 +354,12 @@ async function loadFilesInto(bookPath, mp3Container) {
 
         mp3Container.appendChild(div);
     });
+
+    // NEW: if this folder is currently playing, re-apply highlight
+    if (currentBook === bookPath && currentFile) {
+        markNowPlaying(bookPath, currentFile, { scroll: false });
+        highlightFile(currentFile);
+    }
 }
 
 // ---------------- NOW PLAYING HIGHLIGHT ----------------
@@ -410,6 +431,9 @@ function playFile(book, file) {
 
     startSaving(book, file);
 
+    // NEW: whenever a file starts, open its folder path and re-mark
+    openCurrentFolderAndRemark();
+
     player.onended = () => playNextFromDom(file, book);
 }
 
@@ -437,6 +461,7 @@ async function saveProgress(book, file, pos) {
         })
     });
 }
+
 // ---------------- CONTINUOUS PLAYBACK ----------------
 
 function playNextFromDom(currentFileName, currentBookPath) {
@@ -541,6 +566,70 @@ async function expandAndPlay(bookPath, fileName, position) {
     }
 }
 
+// ----------------- NEW HELPERS: expand & remark -----------------
+
+/**
+ * Expand a path from root to its leaf folder, opening each level.
+ * Returns the leaf container (the .tree-node for the last segment),
+ * or null if not found.
+ */
+function expandPathTo(bookPath) {
+    if (!bookPath) return null;
+
+    const parts = bookPath.split("/");
+    let container = treeContainer;
+
+    for (const part of parts) {
+        const row = [...container.querySelectorAll(".tree-row")]
+            .find(r => r.querySelector(".folder-name").textContent === part);
+        if (!row) return null;
+
+        const arrow = row.querySelector(".arrow");
+        const nextContainer = row.nextElementSibling;
+
+        if (nextContainer && nextContainer.style.display === "none") {
+            arrow.textContent = "－";
+            nextContainer.style.display = "block";
+        }
+        container = nextContainer || container;
+    }
+    return container;
+}
+
+/**
+ * Open the currentBook folder path all the way to root,
+ * load its files, and re-mark the current file (no autoplay).
+ */
+async function openCurrentFolderAndRemark() {
+    if (!currentBook) return;
+
+    const leaf = expandPathTo(currentBook);
+    if (!leaf) return;
+
+    // Ensure cover is shown for the leaf (like in click handlers)
+    const coverWrapper = leaf.querySelector(".book-cover-wrapper");
+    const coverImg = coverWrapper?.querySelector(".book-cover");
+    if (coverWrapper && coverImg) {
+        const coverUrl = await loadCover(currentBook);
+        if (coverUrl) {
+            coverImg.src = coverUrl;
+            coverImg.style.display = "block";
+            coverWrapper.style.display = "block";
+        } else {
+            coverImg.style.display = "none";
+            coverWrapper.style.display = "none";
+        }
+    }
+
+    const mp3Container = leaf.querySelector(".mp3-container");
+    if (mp3Container) {
+        await loadFilesInto(currentBook, mp3Container);
+        if (currentFile) {
+            markNowPlaying(currentBook, currentFile, { scroll: false });
+            highlightFile(currentFile);
+        }
+    }
+}
 
 // ---------------- UI HOOKS FOR SEARCH & NOW PLAYING ----------------
 
@@ -632,4 +721,62 @@ if (isMobile) {
             keyboardOpen = false;
         });
     }
+}
+// Auto-expand a book path and then start playback for that book.
+// It opens each segment of the path, shows the big cover, loads the files,
+// then calls autoPlayBook(bookPath).
+async function autoExpandAndPlay(bookPath) {
+    if (!bookPath) return;
+
+    // Walk from root to the leaf, expanding each level
+    const parts = bookPath.split("/");
+    let container = treeContainer;
+
+    for (const part of parts) {
+        // Find the row for this path segment under the current container
+        const row = [...container.querySelectorAll(".tree-row")]
+            .find(r => r.querySelector(".folder-name").textContent === part);
+        if (!row) return; // path segment not found in current tree
+
+        const arrow = row.querySelector(".arrow");
+        const nextContainer = row.nextElementSibling; // the .tree-node for this segment
+
+        // Open this level if it's closed
+        if (nextContainer && nextContainer.style.display === "none") {
+            arrow.textContent = "－";
+            nextContainer.style.display = "block";
+        }
+
+        // Advance deeper
+        container = nextContainer || container;
+    }
+
+    // At the leaf now. Show the big cover (same behavior as your arrow/name handlers).
+    const coverWrapper = container.querySelector(".book-cover-wrapper");
+    const coverImg = coverWrapper?.querySelector(".book-cover");
+    if (coverWrapper && coverImg) {
+        try {
+            const coverUrl = await loadCover(bookPath);
+            if (coverUrl) {
+                coverImg.src = coverUrl;
+                coverImg.style.display = "block";
+                coverWrapper.style.display = "block";
+            } else {
+                coverImg.style.display = "none";
+                coverWrapper.style.display = "none";
+            }
+        } catch {
+            coverImg.style.display = "none";
+            coverWrapper.style.display = "none";
+        }
+    }
+
+    // Ensure this folder's file list is loaded
+    const mp3Container = container.querySelector(".mp3-container");
+    if (mp3Container) {
+        await loadFilesInto(bookPath, mp3Container);
+    }
+
+    // Start playback for this book (uses your existing logic to resume or play first)
+    await autoPlayBook(bookPath);
 }

@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <title>Audiobook Player</title>
 
-    <link rel="manifest" href="/ab/manifest.json">
-    <link rel="icon" type="image/png" sizes="64x64" href="/favicon.png">
+    <link rel="manifest" href="/AB/manifest.json?v=1-1">
+    <link rel="icon" type="image/png" sizes="64x64" href="/AB/favicon.png">
     <link rel="icon" type="image/png" sizes="192x192" href="/AB/icons/icon-192.png">
     <link rel="icon" type="image/png" sizes="512x512" href="/AB/icons/icon-512.png">
     <link rel="apple-touch-icon" href="/AB/icons/icon-192.png">
@@ -42,14 +42,14 @@
 
         <button class="menu-item" id="refresh-tree-btn">🔄 Refresh</button>
         <button class="menu-item" id="logout-btn">🚪 Logout</button>
-        <button class="menu-item" id="clear-site-btn">🧹 Update (V 1.0)</button>
+        <button class="menu-item" id="clear-site-btn">🧹 Update (V 1.01)</button>
 
         <div id="user-email" class="menu-email"></div>
     </div>
 
     <!-- PLAYER -->
     <div id="player-container">
-        <audio id="player"></audio>
+        <audio id="player" preload="metadata"></audio>
 
         <div id="custom-player">
             <div id="player-buttons">
@@ -95,9 +95,14 @@
         </div>
     </div>
 
-    <script src="app.js?ver=9"></script>
-    <script src="custom-player.js?ver=8"></script>
-    <script src="tree-search.js?ver=1"></script></script>
+    <script src="app.js?ver=12"></script>
+    <script src="custom-player.js?ver=9a"></script>
+    <script src="tree-search.js?ver=10"></script>
+    <script>
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.register("/AB/service-worker.js", { scope: "/AB/" })
+                .catch(err => console.error("SW reg failed:", err));
+        }
+    </script>
 </body>
 </html>
-

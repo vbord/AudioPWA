@@ -1,4 +1,8 @@
-﻿const audio = document.getElementById("player");
+﻿/* ================================================
+   Custom Audio Player (clean, single volume section)
+   ================================================ */
+
+const audio = document.getElementById("player");
 
 const btnPlay = document.getElementById("btn-play");
 const btnBack = document.getElementById("btn-back");
@@ -14,18 +18,30 @@ let isDragging = false;
 const snapInterval = 10;   // snap every 10 seconds
 let lastSnap = -1;
 
-/* PLAY / PAUSE / RESUME LAST */
+/* --------------------------------
+   PLAY / PAUSE / RESUME LAST
+---------------------------------- */
 btnPlay.onclick = () => {
+    // If nothing loaded yet: resume last book/file, then expand & highlight
     if (!audio.src) {
         if (typeof resumeLastBookAndFile === "function") {
             resumeLastBookAndFile();
+            // Let app.js update currentBook/currentFile, then open & remark
+            if (typeof openCurrentFolderAndRemark === "function") {
+                setTimeout(() => openCurrentFolderAndRemark(), 0);
+            }
         }
         return;
     }
 
+    // If a source exists, toggle play/pause
     if (audio.paused) {
         audio.play();
         btnPlay.textContent = "⏸";
+        // Ensure tree reflects current playing file on resume
+        if (typeof openCurrentFolderAndRemark === "function") {
+            setTimeout(() => openCurrentFolderAndRemark(), 0);
+        }
     } else {
         audio.pause();
         btnPlay.textContent = "▶";
@@ -135,78 +151,80 @@ function formatTime(sec) {
 
 audio.onplay = () => {
     btnPlay.textContent = "⏸";
+    // Guard: whenever playback starts (even programmatically), open & remark
+    if (typeof openCurrentFolderAndRemark === "function") {
+        setTimeout(() => openCurrentFolderAndRemark(), 0);
+    }
 };
 
 audio.onpause = () => {
     btnPlay.textContent = "▶";
 };
 
-/* === VOLUME CONTROL (side menu) === */
-(function () {
+/* =========================================================
+   VOLUME CONTROL (side menu) — single source of truth
+   ========================================================= */
+(() => {
+    const audio = document.getElementById("player");
     const volumeControl = document.getElementById("volumeControl");
     const menuBtn = document.getElementById("menu-btn");
     const menuCloseBtn = document.getElementById("menu-close-btn");
 
-    if (!volumeControl) return;
+    if (!audio || !volumeControl) return;
 
-    // 1) При загрузке страницы — выставить ползунок в текущее значение
-    volumeControl.value = audio.volume;
+    // Prevent double-binding if this script is ever evaluated twice
+    if (volumeControl.dataset.bound == "1") return;
+    volumeControl.dataset.bound = "1";
 
-    // 2) Синхронизация при открытии/закрытии меню
-    function syncVolumeSlider() {
-        volumeControl.value = audio.volume;
+    function updateVolumeTrack() {
+        const pct = (Number(volumeControl.value) * 100) + "%";
+        volumeControl.style.setProperty("--val", pct);
     }
 
-    menuBtn?.addEventListener("click", syncVolumeSlider);
-    menuCloseBtn?.addEventListener("click", syncVolumeSlider);
+    function syncSliderFromAudio() {
+        volumeControl.value = String(audio.volume);
+        updateVolumeTrack();
+    }
 
-    // 3) При изменении ползунка — менять громкость плеера
+    // Initial sync on load
+    syncSliderFromAudio();
+
+    // User moves the slider -> update audio + track fill
     volumeControl.addEventListener("input", () => {
-        audio.volume = volumeControl.value;
+        audio.volume = Number(volumeControl.value);
+        updateVolumeTrack();
     });
 
-    // 4) При resume playback — тоже обновить
-    audio.addEventListener("play", syncVolumeSlider);
+    // Programmatic audio volume changes -> sync slider
+    audio.addEventListener("volumechange", syncSliderFromAudio);
+
+    // Keep slider in sync when the menu opens/closes
+    menuBtn?.addEventListener("click", syncSliderFromAudio);
+    menuCloseBtn?.addEventListener("click", syncSliderFromAudio);
 })();
-const volumeControl = document.getElementById("volumeControl");
 
-function updateVolumeTrack() {
-    const pct = (volumeControl.value * 100) + "%";
-    volumeControl.style.setProperty("--val", pct);
-}
-
-volumeControl.addEventListener("input", updateVolumeTrack);
-audio.addEventListener("volumechange", updateVolumeTrack);
-
-
-/* === WATCHDOG: FIX MOBILE BACKGROUND AUTOPLAY === */
+/* =========================================================
+   WATCHDOG: (kept minimal for potential mobile quirks)
+   ========================================================= */
 setInterval(() => {
     if (!audio.src) return;
     if (audio.paused) return;
     if (!audio.duration) return;
 
-    // stuck at end (Chrome dropped onended)
-    //if (audio.currentTime >= audio.duration - 0.5) {
-    //    if (typeof playNextFromDom === "function") {
-    //        playNextFromDom();
-    //    }
-    //}
+    // Example (disabled): in some mobile browsers onended may be skipped
+    // if (audio.currentTime >= audio.duration - 0.5) {
+    //     if (typeof playNextFromDom === "function") {
+    //         playNextFromDom();
+    //     }
+    // }
 }, 1000);
 
-/* === VOLUME TRACK INIT === */
-volumeControl.addEventListener("input", updateVolumeTrack);
-audio.addEventListener("volumechange", updateVolumeTrack);
-
- 
-
-// начальная установка
-updateVolumeTrack();
-
+/* --------------------------------
+   Small helper (unchanged)
+---------------------------------- */
 function updateMenuEmail() {
     const emailBox = document.getElementById("user-email");
     const savedEmail = localStorage.getItem("ab_email");
-
     emailBox.textContent = savedEmail ? savedEmail : "";
 }
 document.addEventListener("DOMContentLoaded", updateMenuEmail);
-

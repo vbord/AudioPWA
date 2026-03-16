@@ -1,35 +1,47 @@
-﻿const isLocalhost = self.location.hostname === "localhost";
-const PREFIX = isLocalhost ? "/" : "/ab/";
-const CACHE = "ab-cache-v4";
+﻿// Dual-environment base (dev vs prod)
+const isLocalhost = self.location.hostname === "localhost";
+// IMPORTANT: production path is uppercase to match your hosting folder
+const BASE = isLocalhost ? "/" : "/AB/";
 
-const FILES = [
-    `${PREFIX}index.html`,
-    `${PREFIX}styles.css`,
-    `${PREFIX}app.js`,
-    `${PREFIX}manifest.json`,
-    `${PREFIX}service-worker.js`,
-    `${PREFIX}icons/icon-192.png`,
-    `${PREFIX}icons/icon-512.png`
+const STATIC_CACHE = "ab-static-v5";
+
+// Only pre-cache small, static UI pieces. No audio or API.
+const PRECACHE = [
+    `${BASE}index.html`,
+    `${BASE}styles.css`,
+    `${BASE}app.js`,
+    `${BASE}custom-player.js`,
+    `${BASE}tree-search.js`,
+    `${BASE}manifest.json`,
 ];
 
-self.addEventListener("install", e => {
+self.addEventListener("install", (e) => {
     self.skipWaiting();
+    e.waitUntil(caches.open(STATIC_CACHE).then((c) => c.addAll(PRECACHE)));
+});
+
+self.addEventListener("activate", (e) => {
     e.waitUntil(
-        caches.open(CACHE).then(cache => cache.addAll(FILES))
+        (async () => {
+            const keys = await caches.keys();
+            await Promise.all(keys.filter(k => k !== STATIC_CACHE).map(k => caches.delete(k)));
+            await self.clients.claim();
+        })()
     );
 });
 
-self.addEventListener("activate", e => {
-    e.waitUntil(
-        caches.keys().then(keys =>
-            Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
-        )
-    );
-    clients.claim();
-});
+self.addEventListener("fetch", (e) => {
+    const url = new URL(e.request.url);
 
-self.addEventListener("fetch", e => {
+    // Cross-origin requests: let them pass through
+    if (url.origin !== self.location.origin) return;
+
+    // Never cache audio (large + range requests) or API calls
+    if (url.pathname.includes("/Uploads/Audio/")) return;
+    if (url.pathname.startsWith("/api/")) return;
+
+    // Static: cache-first
     e.respondWith(
-        caches.match(e.request).then(resp => resp || fetch(e.request))
+        caches.match(e.request).then((cached) => cached || fetch(e.request))
     );
 });

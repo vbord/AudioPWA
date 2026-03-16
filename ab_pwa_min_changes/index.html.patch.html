@@ -1,0 +1,12 @@
+
+<!-- Changes applied:
+  1) Added Service Worker registration with scope /AB/
+  2) Fixed duplicated </script> in the last line of scripts block
+  3) No other structural changes
+-->
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/AB/service-worker.js", { scope: "/AB/" })
+    .catch(err => console.error("SW reg failed:", err));
+}
+</script>
