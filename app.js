@@ -1,30 +1,25 @@
-﻿const API = "https://slava.localto.net/api/BooksApi";
-
+﻿
+const API = "https://slava.localto.net/api/BooksApi";
 const treeContainer = document.getElementById("tree-container");
 const player = document.getElementById("player");
-
 let userId = null;
 let userEmail = null;
 let userProgress = {};
 let saveTimer = null;
-
 let currentBook = null;
 let currentFile = null;
 
 // MENU
 const sideMenu = document.getElementById("side-menu");
 const menuBtn = document.getElementById("menu-btn");
-
 menuBtn.onclick = () => {
     sideMenu.classList.toggle("open");
     document.body.classList.toggle("menu-open", sideMenu.classList.contains("open"));
 };
-
 document.getElementById("menu-close-btn").onclick = () => {
     sideMenu.classList.remove("open");
     document.body.classList.remove("menu-open");
 };
-
 document.querySelectorAll("#side-menu .menu-item").forEach(btn => {
     btn.addEventListener("click", () => {
         sideMenu.classList.remove("open");
@@ -32,13 +27,11 @@ document.querySelectorAll("#side-menu .menu-item").forEach(btn => {
 });
 
 // ---------------- CONTROL DISABLE / ENABLE ----------------
-
 function disablePlayerControls() {
     document.getElementById("btn-back").disabled = true;
     document.getElementById("btn-forward").disabled = true;
     document.getElementById("btn-play").disabled = true;
 }
-
 function enablePlayerControls() {
     document.getElementById("btn-back").disabled = false;
     document.getElementById("btn-forward").disabled = false;
@@ -46,7 +39,6 @@ function enablePlayerControls() {
 }
 
 // ---------------- LOADING OVERLAY ----------------
-
 function showLoading(msg = "Loading…") {
     const el = document.getElementById("loading-overlay");
     if (!el) return;
@@ -54,64 +46,52 @@ function showLoading(msg = "Loading…") {
     el.style.display = "block";
     el.style.opacity = "1";
 }
-
 function hideLoading() {
     const el = document.getElementById("loading-overlay");
     if (!el) return;
     el.style.opacity = "0";
     setTimeout(() => el.style.display = "none", 200);
 }
-
 player.addEventListener("waiting", () => {
     showLoading("Loading…");
     disablePlayerControls();
 });
-
 player.addEventListener("canplay", () => {
     hideLoading();
     enablePlayerControls();
 });
-
 player.addEventListener("playing", () => {
     hideLoading();
     enablePlayerControls();
 });
 
 // ---------------- LOGIN ----------------
-
 function showLogin() {
     document.getElementById("login-modal").style.display = "flex";
 }
-
 function hideLogin() {
     document.getElementById("login-modal").style.display = "none";
 }
-
 document.getElementById("login-btn").onclick = async () => {
     const email = document.getElementById("login-email").value.trim();
     if (!email) return;
-
     const res = await fetch(`${API}/Login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email })
     });
-
     const data = await res.json();
     userId = data.userId;
     userEmail = email;
-
     localStorage.setItem("ab_userId", userId);
     localStorage.setItem("ab_email", email);
     updateMenuEmail();
     hideLogin();
     loadProgress();
 };
-
 function initLogin() {
     const savedId = localStorage.getItem("ab_userId");
     const savedEmail = localStorage.getItem("ab_email");
-
     if (savedId && savedEmail) {
         userId = savedId;
         userEmail = savedEmail;
@@ -123,7 +103,6 @@ function initLogin() {
 }
 
 // ---------------- LOAD PROGRESS ----------------
-
 async function loadProgress() {
     const res = await fetch(`${API}/GetProgress?userId=${userId}`);
     if (res.ok) {
@@ -134,14 +113,11 @@ async function loadProgress() {
 }
 
 // ---------------- LOAD BOOKS ----------------
-
 async function loadBooks() {
     const res = await fetch(`${API}/GetBooks`);
     const books = await res.json();
-
     const paths = books.map(b => b.name);
     const tree = buildTree(paths);
-
     treeContainer.innerHTML = "";
     renderTree(tree, treeContainer, "");
 
@@ -151,7 +127,6 @@ async function loadBooks() {
         setTimeout(() => openCurrentFolderAndRemark(), 0);
     }
 }
-
 function buildTree(paths) {
     const root = {};
     paths.forEach(path => {
@@ -166,7 +141,6 @@ function buildTree(paths) {
 }
 
 // ---------------- COVER LOADER ----------------
-
 async function loadCover(bookPath) {
     const res = await fetch(`${API}/GetBookCover?book=${encodeURIComponent(bookPath)}`);
     const cover = await res.json();
@@ -175,7 +149,6 @@ async function loadCover(bookPath) {
 }
 
 // ---------------- TREE RENDERING ----------------
-
 function renderTree(node, container, currentPath) {
     Object.keys(node).forEach(key => {
         const fullPath = currentPath ? `${currentPath}/${key}` : key;
@@ -186,14 +159,12 @@ function renderTree(node, container, currentPath) {
         // small cover icon
         const icon = document.createElement("img");
         icon.className = "folder-icon hidden";
-
         loadCover(fullPath).then(url => {
             if (url) {
                 icon.src = url;
                 icon.classList.remove("hidden");
             }
         });
-
         icon.onerror = () => icon.classList.add("hidden");
 
         const arrow = document.createElement("span");
@@ -218,7 +189,6 @@ function renderTree(node, container, currentPath) {
         const coverWrapper = document.createElement("div");
         coverWrapper.className = "book-cover-wrapper";
         coverWrapper.style.display = "none";
-
         const coverImg = document.createElement("img");
         coverImg.className = "book-cover";
         coverImg.style.display = "none";
@@ -227,7 +197,6 @@ function renderTree(node, container, currentPath) {
             coverWrapper.style.display = "none";
         };
         coverWrapper.appendChild(coverImg);
-
         childContainer.appendChild(coverWrapper);
 
         renderTree(node[key], childContainer, fullPath);
@@ -263,7 +232,6 @@ function renderTree(node, container, currentPath) {
                 childContainer.style.display = "none";
             }
         };
-
         name.onclick = async () => {
             arrow.textContent = "－";
             childContainer.style.display = "block";
@@ -279,7 +247,6 @@ function renderTree(node, container, currentPath) {
             }
 
             document.querySelectorAll(".file-item").forEach(el => el.remove());
-
             await loadFilesInto(fullPath, mp3Container);
 
             // NEW: if this is the current book, re-mark now-playing
@@ -291,8 +258,9 @@ function renderTree(node, container, currentPath) {
             setTimeout(() => autoPlayBook(fullPath), 200);
         };
 
-        row.appendChild(icon);
+        // *** ORDER FIX: arrow → small cover icon → folder name → info (DOM append order) ***
         row.appendChild(arrow);
+        row.appendChild(icon);
         row.appendChild(name);
         row.appendChild(infoIconInline);
 
@@ -302,33 +270,29 @@ function renderTree(node, container, currentPath) {
 }
 
 // ---------------- DESCRIPTION LOADER ----------------
-
 async function openDescription(fullPath) {
     const modal = document.getElementById("desc-modal");
     const textEl = document.getElementById("desc-text");
-
     const url = `https://slava.localto.net/Uploads/Audio/ABOOKS/${fullPath}/description.txt`;
 
     let text = "";
-
     try {
         const res = await fetch(url);
         if (res.ok) {
             text = await res.text();
         } else {
-            text = `No description available for:\n${fullPath}`;
+            text = `No description available for:
+${fullPath}`;
         }
     } catch (e) {
-        text = `No description available for:\n${fullPath}`;
+        text = `No description available for:
+${fullPath}`;
     }
-
     textEl.textContent = text;
     modal.style.display = "flex";
 }
-
 document.getElementById("desc-close-btn").onclick = () =>
     document.getElementById("desc-modal").style.display = "none";
-
 document.getElementById("desc-modal").onclick = e => {
     if (e.target.id === "desc-modal") {
         document.getElementById("desc-modal").style.display = "none";
@@ -336,22 +300,17 @@ document.getElementById("desc-modal").onclick = e => {
 };
 
 // ---------------- LOAD MP3 FILES ----------------
-
 async function loadFilesInto(bookPath, mp3Container) {
     const res = await fetch(`${API}/GetBookFiles?book=${encodeURIComponent(bookPath)}`);
     const files = await res.json();
-
     mp3Container.innerHTML = "";
-
     files.forEach(f => {
         const div = document.createElement("div");
         div.className = "file-item";
         div.textContent = f;
         div.dataset.book = bookPath;
         div.dataset.file = f;
-
         div.onclick = () => playFile(bookPath, f);
-
         mp3Container.appendChild(div);
     });
 
@@ -363,7 +322,6 @@ async function loadFilesInto(bookPath, mp3Container) {
 }
 
 // ---------------- NOW PLAYING HIGHLIGHT ----------------
-
 function markNowPlaying(book, file, opts = { scroll: false }) {
     const items = document.querySelectorAll(".file-item");
     items.forEach(i => i.classList.remove("now-playing-item"));
@@ -371,7 +329,6 @@ function markNowPlaying(book, file, opts = { scroll: false }) {
     const match = [...items].find(i =>
         i.dataset.book === book && i.dataset.file === file
     );
-
     if (match) {
         match.classList.add("now-playing-item");
         if (opts.scroll) {
@@ -382,7 +339,6 @@ function markNowPlaying(book, file, opts = { scroll: false }) {
         }
     }
 }
-
 function highlightFile(file) {
     document.querySelectorAll(".file-item").forEach(el => el.classList.remove("file-active"));
     const match = [...document.querySelectorAll(".file-item")]
@@ -391,10 +347,8 @@ function highlightFile(file) {
 }
 
 // ---------------- PLAYBACK ----------------
-
 function playFile(book, file) {
     const url = `https://slava.localto.net/Uploads/Audio/ABOOKS/${book}/${file}`;
-
     currentBook = book;
     currentFile = file;
 
@@ -411,13 +365,11 @@ function playFile(book, file) {
     if (hasSaved) {
         showLoading("Loading…");
         disablePlayerControls();
-
         player.addEventListener("canplay", () => {
             hideLoading();
             enablePlayerControls();
             player.play().catch(err => console.warn("Play error:", err));
         }, { once: true });
-
         player.currentTime = userProgress[book].position;
     } else {
         player.play().catch(err => console.warn("Play error:", err));
@@ -425,10 +377,8 @@ function playFile(book, file) {
 
     highlightFile(file);
     markNowPlaying(book, file, { scroll: true });
-
     document.getElementById("now-playing").textContent =
         `📘 ${book} — 🎵 ${file}`;
-
     startSaving(book, file);
 
     // NEW: whenever a file starts, open its folder path and re-mark
@@ -438,18 +388,14 @@ function playFile(book, file) {
 }
 
 // ---------------- SAVE PROGRESS ----------------
-
 function startSaving(book, file) {
     if (saveTimer) clearInterval(saveTimer);
-
     saveTimer = setInterval(() => {
         saveProgress(book, file, player.currentTime);
     }, 5000);
 }
-
 async function saveProgress(book, file, pos) {
     userProgress[book] = { file, position: pos, updated: new Date().toISOString() };
-
     await fetch(`${API}/SaveProgress`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -463,36 +409,29 @@ async function saveProgress(book, file, pos) {
 }
 
 // ---------------- CONTINUOUS PLAYBACK ----------------
-
 function playNextFromDom(currentFileName, currentBookPath) {
     const items = [...document.querySelectorAll(".file-item")];
     const idx = items.findIndex(el => el.textContent === currentFileName);
-
     if (idx >= 0 && idx < items.length - 1) {
         items[idx + 1].click();
         return;
     }
-
     const nextBook = getNextBookPath(currentBookPath);
     if (!nextBook) return;
-
     setTimeout(() => autoExpandAndPlay(nextBook), 300);
 }
 
 // ---------------- AUTO PLAY BOOK ----------------
-
 async function autoPlayBook(book) {
     if (userProgress[book]) {
         playFile(book, userProgress[book].file);
         return;
     }
-
     const items = [...document.querySelectorAll(".file-item")];
     if (items.length > 0) items[0].click();
 }
 
 // ---------------- RESUME LAST BOOK/FILE ----------------
-
 function resumeLastBookAndFile() {
     if (!userProgress || Object.keys(userProgress).length === 0) {
         return;
@@ -500,7 +439,6 @@ function resumeLastBookAndFile() {
 
     let lastBook = null;
     let lastTime = 0;
-
     for (const [book, data] of Object.entries(userProgress)) {
         const t = new Date(data.updated).getTime();
         if (t > lastTime) {
@@ -508,15 +446,12 @@ function resumeLastBookAndFile() {
             lastBook = book;
         }
     }
-
     if (!lastBook) return;
 
     const file = userProgress[lastBook].file;
     const pos = userProgress[lastBook].position;
-
     expandAndPlay(lastBook, file, pos);
 }
-
 async function expandAndPlay(bookPath, fileName, position) {
     const parts = bookPath.split("/");
     let container = treeContainer;
@@ -524,7 +459,6 @@ async function expandAndPlay(bookPath, fileName, position) {
     for (const part of parts) {
         const row = [...container.querySelectorAll(".tree-row")]
             .find(r => r.querySelector(".folder-name").textContent === part);
-
         if (!row) continue;
 
         const arrow = row.querySelector(".arrow");
@@ -534,12 +468,10 @@ async function expandAndPlay(bookPath, fileName, position) {
             arrow.textContent = "－";
             nextContainer.style.display = "block";
         }
-
         container = nextContainer;
     }
 
     document.querySelectorAll(".file-item").forEach(el => el.remove());
-
     const mp3Container = container.querySelector(".mp3-container");
     if (mp3Container) {
         await loadFilesInto(bookPath, mp3Container);
@@ -547,13 +479,11 @@ async function expandAndPlay(bookPath, fileName, position) {
 
     const target = [...document.querySelectorAll(".file-item")]
         .find(el => el.textContent === fileName);
-
     if (target) {
         target.click();
         if (typeof position === "number" && position > 0) {
             showLoading("Loading…");
             disablePlayerControls();
-
             player.addEventListener("canplay", () => {
                 hideLoading();
                 enablePlayerControls();
@@ -567,7 +497,6 @@ async function expandAndPlay(bookPath, fileName, position) {
 }
 
 // ----------------- NEW HELPERS: expand & remark -----------------
-
 /**
  * Expand a path from root to its leaf folder, opening each level.
  * Returns the leaf container (the .tree-node for the last segment),
@@ -575,7 +504,6 @@ async function expandAndPlay(bookPath, fileName, position) {
  */
 function expandPathTo(bookPath) {
     if (!bookPath) return null;
-
     const parts = bookPath.split("/");
     let container = treeContainer;
 
@@ -586,7 +514,6 @@ function expandPathTo(bookPath) {
 
         const arrow = row.querySelector(".arrow");
         const nextContainer = row.nextElementSibling;
-
         if (nextContainer && nextContainer.style.display === "none") {
             arrow.textContent = "－";
             nextContainer.style.display = "block";
@@ -632,7 +559,6 @@ async function openCurrentFolderAndRemark() {
 }
 
 // ---------------- UI HOOKS FOR SEARCH & NOW PLAYING ----------------
-
 const searchInput = document.getElementById("tree-search");
 if (searchInput) {
     searchInput.addEventListener("input", () => {
@@ -640,7 +566,6 @@ if (searchInput) {
         searchTree(term);
     });
 }
-
 const searchBtn = document.getElementById("search-go-btn");
 if (searchBtn) {
     searchBtn.onclick = () => {
@@ -648,7 +573,6 @@ if (searchBtn) {
         searchTree(term);
     };
 }
-
 const jumpNowBtn = document.getElementById("jump-now-btn");
 if (jumpNowBtn) {
     jumpNowBtn.onclick = () => {
@@ -662,14 +586,12 @@ if (jumpNowBtn) {
 }
 
 // ---------------- REFRESH TREE ----------------
-
 document.getElementById("refresh-tree-btn").onclick = () => {
     treeContainer.innerHTML = "";
     loadBooks();
 };
 
 // ---------------- LOGOUT ----------------
-
 document.getElementById("logout-btn").onclick = () => {
     localStorage.removeItem("ab_userId");
     localStorage.removeItem("ab_email");
@@ -677,51 +599,42 @@ document.getElementById("logout-btn").onclick = () => {
 };
 
 // ---------------- CLEAR SITE DATA ----------------
-
 document.getElementById("clear-site-btn").onclick = async () => {
     localStorage.clear();
-
     if ('caches' in window) {
         const names = await caches.keys();
         for (const name of names) {
             await caches.delete(name);
         }
     }
-
     if (navigator.serviceWorker) {
         const regs = await navigator.serviceWorker.getRegistrations();
         for (const reg of regs) {
             await reg.unregister();
         }
     }
-
     alert("Site data cleared. Reloading…");
     location.reload();
 };
 
 // ---------------- INIT ----------------
-
 initLogin();
 
 // ---------------- KEYBOARD DETECTOR ----------------
-
 let keyboardOpen = false;
-
 const isMobile = matchMedia("(pointer: coarse)").matches;
-
 if (isMobile) {
-    const searchInput = document.getElementById("tree-search");
-
-    if (searchInput) {
-        searchInput.addEventListener("focus", () => {
+    const searchInput2 = document.getElementById("tree-search");
+    if (searchInput2) {
+        searchInput2.addEventListener("focus", () => {
             keyboardOpen = true;
         });
-
-        searchInput.addEventListener("blur", () => {
+        searchInput2.addEventListener("blur", () => {
             keyboardOpen = false;
         });
     }
 }
+
 // Auto-expand a book path and then start playback for that book.
 // It opens each segment of the path, shows the big cover, loads the files,
 // then calls autoPlayBook(bookPath).

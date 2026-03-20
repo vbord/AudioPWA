@@ -31,6 +31,7 @@ body {
     }
 
 /* HIDE NATIVE AUDIO */
+
 audio {
     width: 0;
     height: 0;
@@ -50,7 +51,6 @@ audio {
 /* CUSTOM PLAYER */
 #player-container {
     background: #7c79799c;
-    
 }
 
 #custom-player {
@@ -80,7 +80,6 @@ audio {
     }
 
 /* PROGRESS BAR */
-/* PROGRESS BAR */
 #progress-bar {
     width: 100%;
     height: 16px;
@@ -90,7 +89,6 @@ audio {
     background: #403b69;
     box-shadow: inset 0 2px 4px rgba(0,0,0,0.45), inset 0 -1px 2px rgba(255,255,255,0.15);
 }
-
 /* FILLED PART (before position) */
 #progress-fill {
     height: 100%;
@@ -100,7 +98,6 @@ audio {
     background: #99d399;
     box-shadow: 0 2px 4px rgba(0,0,0,0.6), inset 0 2px 3px rgba(255,255,255,0.35), inset 0 -2px 3px rgba(0,0,0,0.4);
 }
-
 
 /* TIME DISPLAY */
 #time-display {
@@ -123,6 +120,7 @@ audio {
     color: black;
     margin: 10px 20px;
 }
+
 #login-modal {
     position: fixed;
     top: 0;
@@ -141,11 +139,15 @@ audio {
 
 /* ICONS */
 .folder-icon {
-    width: 1em;
-    height: 1em;
+    width: 1.2em; /* fixed icon column so arrows never jump */
+    height: 1.2em;
+    object-fit: cover; /* or 'contain' */
+    display: inline-block;
 }
 
- 
+    .folder-icon.hidden {
+        visibility: hidden; /* reserve space; not display:none */
+    }
 
 /* LOADING OVERLAY — KEEP EXACTLY AS BASELINE */
 #loading-overlay {
@@ -283,7 +285,24 @@ audio {
     gap: 6px;
     padding: 4px 0;
 }
+    /* Enforce visual order regardless of DOM order */
+    .tree-row .arrow {
+        order: 1;
+    }
 
+    .tree-row .folder-icon {
+        order: 2;
+    }
+
+    .tree-row .folder-name {
+        order: 3;
+    }
+
+    .tree-row .desc-icon-inline {
+        order: 4;
+    }
+
+ 
     .tree-row::before {
         content: "";
         position: absolute;
@@ -433,7 +452,6 @@ audio {
     font-size: 1em;
 }
 
-
 /* BIG COVER */
 .book-cover-wrapper {
     margin-top: 3px;
@@ -491,8 +509,6 @@ audio {
 #play-wrapper {
     width: 40%;
 }
- 
-
 
 #play-wrapper {
     position: relative;
@@ -502,7 +518,6 @@ audio {
 #btn-play {
     width: 100%;
 }
-
 
 #desc-text {
     white-space: pre-wrap !important; /* сохраняет \n, но разрешает переносы */
@@ -526,7 +541,7 @@ audio {
     text-align: center;
     word-break: break-all;
     height: auto;
-    font-size:1.2em;
+    font-size: 1.2em;
 }
 
 .arrow {
@@ -542,4 +557,5 @@ audio {
     line-height: 1;
     cursor: pointer;
     min-width: 1.2em;
+    align-self: flex-start;
 }
