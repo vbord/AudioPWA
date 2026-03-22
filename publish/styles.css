@@ -281,7 +281,7 @@ audio {
 .tree-row {
     position: relative;
     display: flex;
-    align-items: center;
+    align-items: self-start;
     gap: 6px;
     padding: 4px 0;
 }
@@ -302,7 +302,7 @@ audio {
         order: 4;
     }
 
- 
+
     .tree-row::before {
         content: "";
         position: absolute;
@@ -320,6 +320,7 @@ audio {
 .folder-name {
     flex-grow: 1;
     word-break: break-all;
+    background: #2d2d2d;
 }
 
 /* FILE ITEMS */
