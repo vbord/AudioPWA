@@ -1,0 +1,130 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AB Roadmap Notes</title>
+    <style>
+        body {
+            background: #111;
+            color: #eee;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            padding: 16px;
+            line-height: 1.5;
+        }
+
+        h1, h2, h3 {
+            color: #ffd36b;
+        }
+
+        code {
+            background: #222;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        .version {
+            margin-bottom: 1.5em;
+            padding: 10px 12px;
+            border-radius: 6px;
+            background: #1b1b1b;
+            border: 1px solid #333;
+        }
+
+        .tagline {
+            color: #9fd3ff;
+            font-style: italic;
+        }
+
+        ul {
+            margin-top: 0.4em;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>AB Product Roadmap</h1>
+
+    <p class="tagline">ver_AB_prd_01 → ver_AB_prd_04 — baseline, local, video, upload</p>
+
+    <div class="version">
+        <h2>ver_AB_prd_01 — current stable baseline</h2>
+        <ul>
+            <li>Tree works stably.</li>
+            <li>Custom player with drag, snapping, haptics.</li>
+            <li>Search, jump, resume, API all wired.</li>
+            <li>UI is clean, compact, mobile-friendly.</li>
+            <li>Code is starting to be modular (<code>tree-search.js</code>, <code>custom-player.js</code>).</li>
+        </ul>
+        <p>This is the right moment to fix this version on GitHub as a safe baseline.</p>
+    </div>
+
+    <div class="version">
+        <h2>ver_AB_prd_02 — play folders from local device</h2>
+        <h3>Goals</h3>
+        <ul>
+            <li>Access local filesystem via File System Access API.</li>
+            <li>Let user pick a folder (<code>showDirectoryPicker()</code>).</li>
+            <li>Recursively walk files and build the tree locally (no server API).</li>
+            <li>Unify UI: local and server books look identical in the tree.</li>
+            <li>Optionally cache covers and descriptions if present.</li>
+        </ul>
+        <h3>Why it fits the current architecture</h3>
+        <ul>
+            <li>Tree already works with arbitrary data sources.</li>
+            <li>Player is independent of API.</li>
+            <li>Progress can be keyed by file path → works for local files too.</li>
+        </ul>
+    </div>
+
+    <div class="version">
+        <h2>ver_AB_prd_03 — add video playback (local + server)</h2>
+        <h3>Goals</h3>
+        <ul>
+            <li>Support video formats (e.g. <code>.mp4</code>, <code>.mkv</code>, <code>.mov</code>).</li>
+            <li>Add a dedicated <code>&lt;video&gt;</code> element.</li>
+            <li>Switch between audio and video modes in the same UI.</li>
+            <li>Optionally show thumbnails or previews.</li>
+            <li>Reuse existing logic: drag, snapping, resume, tree navigation.</li>
+        </ul>
+        <p>Most of the work is already done — video becomes just another file type.</p>
+    </div>
+
+    <div class="version">
+        <h2>ver_AB_prd_04 — upload (local → server)</h2>
+        <h3>Goals</h3>
+        <ul>
+            <li>Support drag-and-drop or file/folder selection for upload.</li>
+            <li>Upload via API with progress indication.</li>
+            <li>Automatically create server-side structure from local folders.</li>
+            <li>Refresh tree after upload to reflect new content.</li>
+        </ul>
+        <h3>Why this step later</h3>
+        <ul>
+            <li>By then, UI for local + server playback is already unified.</li>
+            <li>Tree and player are generic and stable.</li>
+            <li>Server side can stay minimal and focused on storage + metadata.</li>
+        </ul>
+    </div>
+
+    <div class="version">
+        <h2>Overall strategy</h2>
+        <ol>
+            <li><strong>Stable base</strong> — ver_AB_prd_01 (done).</li>
+            <li><strong>Local folders</strong> — ver_AB_prd_02 (autonomous mode).</li>
+            <li><strong>Video support</strong> — ver_AB_prd_03 (feature expansion).</li>
+            <li><strong>Upload</strong> — ver_AB_prd_04 (full platform).</li>
+        </ol>
+        <p>This order is logical: each step builds on the previous one without breaking your workflow.</p>
+    </div>
+
+    <div class="version">
+        <h2>Immediate next step</h2>
+        <ul>
+            <li>Commit and push <code>ver_AB_prd_01</code> to GitHub as the baseline.</li>
+            <li>Create a branch like <code>ver_AB_prd_02_dev</code> for local-folder work.</li>
+            <li>Optionally extract 1–2 more modules (e.g. progress, api) for cleaner structure.</li>
+        </ul>
+    </div>
+
+</body>
+</html>

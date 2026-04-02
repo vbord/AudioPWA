@@ -73,12 +73,14 @@
     <Content Include="abimage\icon-512.png" />
     <Content Include="app.js" />
     <Content Include="custom-player.js" />
-    <Content Include="doc.html" />
+    <Content Include="doc.txt" />
     <Content Include="favicon.ico" />
     <Content Include="favicon.png" />
     <Content Include="icons\icon-192.png" />
     <Content Include="icons\icon-512.png" />
     <Content Include="index.html" />
+    <Content Include="local-mode.js" />
+    <Content Include="play.js" />
     <Content Include="publish\app.js" />
     <Content Include="publish\custom-player.js" />
     <Content Include="publish\favicon.ico" />

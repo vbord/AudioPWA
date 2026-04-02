@@ -12,6 +12,7 @@ let currentFile = null;
 // MENU
 const sideMenu = document.getElementById("side-menu");
 const menuBtn = document.getElementById("menu-btn");
+
 menuBtn.onclick = () => {
     sideMenu.classList.toggle("open");
     document.body.classList.toggle("menu-open", sideMenu.classList.contains("open"));
@@ -52,18 +53,7 @@ function hideLoading() {
     el.style.opacity = "0";
     setTimeout(() => el.style.display = "none", 200);
 }
-player.addEventListener("waiting", () => {
-    showLoading("Loading…");
-    disablePlayerControls();
-});
-player.addEventListener("canplay", () => {
-    hideLoading();
-    enablePlayerControls();
-});
-player.addEventListener("playing", () => {
-    hideLoading();
-    enablePlayerControls();
-});
+
 
 // ---------------- LOGIN ----------------
 function showLogin() {
@@ -349,39 +339,38 @@ function highlightFile(file) {
 // ---------------- PLAYBACK ----------------
 function playFile(book, file) {
     const url = `https://slava.localto.net/Uploads/Audio/ABOOKS/${book}/${file}`;
+
     currentBook = book;
     currentFile = file;
 
-    player.src = url;
     player.dataset.book = book;
     player.dataset.file = file;
 
-    const hasSaved =
-        userProgress[book] &&
-        userProgress[book].file === file &&
-        typeof userProgress[book].position === "number" &&
-        userProgress[book].position > 0;
+    showLoading("Loading…");
+    disablePlayerControls();
 
-    if (hasSaved) {
-        showLoading("Loading…");
-        disablePlayerControls();
-        player.addEventListener("canplay", () => {
-            hideLoading();
-            enablePlayerControls();
-            player.play().catch(err => console.warn("Play error:", err));
-        }, { once: true });
-        player.currentTime = userProgress[book].position;
-    } else {
-        player.play().catch(err => console.warn("Play error:", err));
-    }
+    const position =
+        userProgress[book] &&
+            userProgress[book].file === file &&
+            typeof userProgress[book].position === "number"
+            ? userProgress[book].position
+            : 0;
+
+    // ✅ SINGLE place where playback is started
+    ResumePlayer.play({
+        src: url,
+        position
+    });
 
     highlightFile(file);
     markNowPlaying(book, file, { scroll: true });
+
     document.getElementById("now-playing").textContent =
         `📘 ${book} — 🎵 ${file}`;
+
     startSaving(book, file);
 
-    // NEW: whenever a file starts, open its folder path and re-mark
+    // UI only — does NOT affect playback
     openCurrentFolderAndRemark();
 
     player.onended = () => playNextFromDom(file, book);
@@ -484,12 +473,7 @@ async function expandAndPlay(bookPath, fileName, position) {
         if (typeof position === "number" && position > 0) {
             showLoading("Loading…");
             disablePlayerControls();
-            player.addEventListener("canplay", () => {
-                hideLoading();
-                enablePlayerControls();
-                player.currentTime = position;
-                player.play().catch(err => console.warn("Play error:", err));
-            }, { once: true });
+ 
         }
     } else {
         setTimeout(() => autoPlayBook(bookPath), 300);

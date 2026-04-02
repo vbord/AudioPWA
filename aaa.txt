@@ -1,0 +1,216 @@
+/* ================================================
+   Custom Audio Player (original, speed-fixed only)
+   ================================================ */
+
+const audio = document.getElementById("player");
+const btnPlay = document.getElementById("btn-play");
+const btnBack = document.getElementById("btn-back");
+const btnForward = document.getElementById("btn-forward");
+const bar = document.getElementById("progress-bar");
+const fill = document.getElementById("progress-fill");
+const timeDisplay = document.getElementById("time-display");
+
+let isDragging = false;
+
+/* ================================================
+   SPEED FIX: SAFE SEEK HELPER
+   (prevents readyState dropping to 1)
+   ================================================ */
+function safeSeek(targetTime) {
+  if (
+    !audio.paused &&
+    audio.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA
+  ) {
+    audio.currentTime = targetTime;
+    return;
+  }
+
+  audio.addEventListener(
+    "playing",
+    () => {
+      if (audio.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA) {
+        audio.currentTime = targetTime;
+      }
+    },
+    { once: true }
+  );
+}
+
+/* --------------------------------
+   PLAY / PAUSE / RESUME LAST
+---------------------------------- */
+btnPlay.onclick = () => {
+  if (!audio.src) {
+    if (typeof resumeLastBookAndFile === "function") {
+      resumeLastBookAndFile();
+      if (typeof openCurrentFolderAndRemark === "function") {
+        setTimeout(() => openCurrentFolderAndRemark(), 0);
+      }
+    }
+    return;
+  }
+
+  if (audio.paused) {
+    audio.play();
+    btnPlay.textContent = "⏸";
+    if (typeof openCurrentFolderAndRemark === "function") {
+      setTimeout(() => openCurrentFolderAndRemark(), 0);
+    }
+  } else {
+    audio.pause();
+    btnPlay.textContent = "▶";
+  }
+};
+
+/* --------------------------------
+   SEEK BACK 15s (FIXED)
+---------------------------------- */
+btnBack.onclick = () => {
+  safeSeek(Math.max(0, audio.currentTime - 15));
+};
+
+/* --------------------------------
+   SEEK FORWARD 30s (FIXED)
+---------------------------------- */
+btnForward.onclick = () => {
+  if (!audio.duration) return;
+  safeSeek(Math.min(audio.duration, audio.currentTime + 30));
+};
+
+/* --------------------------------
+   UPDATE PROGRESS + TIME
+---------------------------------- */
+audio.ontimeupdate = () => {
+  if (!isDragging && audio.duration) {
+    const pct = (audio.currentTime / audio.duration) * 100;
+    fill.style.width = pct + "%";
+  }
+  const cur = formatTime(audio.currentTime);
+  const dur = formatTime(audio.duration);
+  timeDisplay.textContent = `${cur} / ${dur}`;
+};
+
+/* --------------------------------
+   DRAGGING (FIXED)
+---------------------------------- */
+bar.addEventListener("mousedown", startDrag);
+bar.addEventListener("touchstart", startDrag);
+
+function startDrag(e) {
+  isDragging = true;
+  moveDrag(e);
+  document.addEventListener("mousemove", moveDrag);
+  document.addEventListener("touchmove", moveDrag);
+  document.addEventListener("mouseup", endDrag);
+  document.addEventListener("touchend", endDrag);
+}
+
+function moveDrag(e) {
+  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+  const rect = bar.getBoundingClientRect();
+  let pct = (clientX - rect.left) / rect.width;
+  pct = Math.max(0, Math.min(1, pct));
+  if (!audio.duration) return;
+
+  const previewTime = pct * audio.duration;
+  fill.style.width = (pct * 100) + "%";
+  timeDisplay.textContent =
+    `${formatTime(previewTime)} / ${formatTime(audio.duration)}`;
+}
+
+function endDrag(e) {
+  if (!audio.duration) return;
+
+  const clientX = e.changedTouches ? e.changedTouches[0].clientX : e.clientX;
+  const rect = bar.getBoundingClientRect();
+  let pct = (clientX - rect.left) / rect.width;
+  pct = Math.max(0, Math.min(1, pct));
+
+  const finalTime = pct * audio.duration;
+  safeSeek(finalTime);
+
+  isDragging = false;
+
+  document.removeEventListener("mousemove", moveDrag);
+  document.removeEventListener("touchmove", moveDrag);
+  document.removeEventListener("mouseup", endDrag);
+  document.removeEventListener("touchend", endDrag);
+}
+
+/* --------------------------------
+   FORMAT TIME
+---------------------------------- */
+function formatTime(sec) {
+  if (!sec || isNaN(sec)) return "0:00";
+  const m = Math.floor(sec / 60);
+  const s = Math.floor(sec % 60).toString().padStart(2, "0");
+  return `${m}:${s}`;
+}
+
+/* --------------------------------
+   PLAY / PAUSE UI SYNC
+---------------------------------- */
+audio.onplay = () => {
+  btnPlay.textContent = "⏸";
+  if (typeof openCurrentFolderAndRemark === "function") {
+    setTimeout(() => openCurrentFolderAndRemark(), 0);
+  }
+};
+
+audio.onpause = () => {
+  btnPlay.textContent = "▶";
+};
+
+/* =================================================
+   VOLUME CONTROL (unchanged)
+================================================= */
+(() => {
+  const volumeControl = document.getElementById("volumeControl");
+  const menuBtn = document.getElementById("menu-btn");
+  const menuCloseBtn = document.getElementById("menu-close-btn");
+
+  if (!audio || !volumeControl) return;
+  if (volumeControl.dataset.bound == "1") return;
+  volumeControl.dataset.bound = "1";
+
+  function updateVolumeTrack() {
+    const pct = (Number(volumeControl.value) * 100) + "%";
+    volumeControl.style.setProperty("--val", pct);
+  }
+
+  function syncSliderFromAudio() {
+    volumeControl.value = String(audio.volume);
+    updateVolumeTrack();
+  }
+
+  syncSliderFromAudio();
+
+  volumeControl.addEventListener("input", () => {
+    audio.volume = Number(volumeControl.value);
+    updateVolumeTrack();
+  });
+
+  audio.addEventListener("volumechange", syncSliderFromAudio);
+  menuBtn?.addEventListener("click", syncSliderFromAudio);
+  menuCloseBtn?.addEventListener("click", syncSliderFromAudio);
+})();
+
+/* --------------------------------
+   WATCHDOG (unchanged)
+---------------------------------- */
+setInterval(() => {
+  if (!audio.src) return;
+  if (audio.paused) return;
+  if (!audio.duration) return;
+}, 1000);
+
+/* --------------------------------
+   Small helper (unchanged)
+---------------------------------- */
+function updateMenuEmail() {
+  const emailBox = document.getElementById("user-email");
+  const savedEmail = localStorage.getItem("ab_email");
+  emailBox.textContent = savedEmail ? savedEmail : "";
+}
+
+document.addEventListener("DOMContentLoaded", updateMenuEmail);

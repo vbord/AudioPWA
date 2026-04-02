@@ -173,7 +173,7 @@ audio.onpause = () => {
     if (!audio || !volumeControl) return;
 
     // Prevent double-binding if this script is ever evaluated twice
-    if (volumeControl.dataset.bound === "1") return;
+    if (volumeControl.dataset.bound == "1") return;
     volumeControl.dataset.bound = "1";
 
     function updateVolumeTrack() {

@@ -3,7 +3,7 @@ const isLocalhost = self.location.hostname === "localhost";
 // IMPORTANT: production path is uppercase to match your hosting folder
 const BASE = isLocalhost ? "/" : "/AB/";
 
-const STATIC_CACHE = "ab-static-v5";
+const STATIC_CACHE = "ab-static-v6"; // bumped
 
 // Only pre-cache small, static UI pieces. No audio or API.
 const PRECACHE = [
@@ -40,8 +40,15 @@ self.addEventListener("fetch", (e) => {
     if (url.pathname.includes("/Uploads/Audio/")) return;
     if (url.pathname.startsWith("/api/")) return;
 
-    // Static: cache-first
-    e.respondWith(
-        caches.match(e.request).then((cached) => cached || fetch(e.request))
-    );
+    // Static: cache-first, try to ignore query strings for lookups
+    e.respondWith((async () => {
+        // exact match
+        let cached = await caches.match(e.request);
+        if (cached) return cached;
+        // try the same URL without query string
+        const urlNoSearch = new URL(e.request.url);
+        urlNoSearch.search = "";
+        cached = await caches.match(urlNoSearch.toString());
+        return cached || fetch(e.request);
+    })());
 });

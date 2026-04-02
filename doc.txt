@@ -1,0 +1,88 @@
+﻿FILE: app.js
+
+[app.js : line ~490]
+player.currentTime = position;
+COMMENT:
+- This is a RESUME seek.
+- Can happen when restoring playback after app reload or navigation.
+- Can fire more than once if:
+  - resume logic is triggered again after UI expansion
+  - or playFile() is indirectly re-entered (e.g. target.click())
+- High risk for duplicate seek during one resume cycle.
+
+[app.js : line ~373]
+player.currentTime = userProgress[book].position;
+COMMENT:
+- This is ALSO a RESUME seek.
+- Usually occurs inside playFile() when hasSaved === true.
+- Can happen in the SAME playback session as the line above.
+- If both execute, browser receives TWO seeks to same position.
+- This is the PRIMARY cause of slow seek near end.
+
+[app.js : line ~394]
+saveProgress(book, file, player.currentTime);
+COMMENT:
+- READ ONLY.
+- Called repeatedly on timeupdate / interval.
+- Does NOT cause seek.
+- Safe.
+------------------------------------------------------------
+2 places we need to use gaurd to prevent duplicate seeks:
+
+[app.js : line ~490]
+player.currentTime = position;
+[app.js : line ~373]
+player.currentTime = userProgress[book].position;
+
+and 2 more changes 1 set initial guard to false and then set it to true after player starts playing:
+
+------------------------------------------------------------
+
+FILE: custom-player.js
+
+[custom-player.js : line ~132]
+audio.currentTime = finalTime;
+COMMENT:
+- USER-INITIATED seek (progress bar / scrub).
+- Triggered directly by pointer / mouse event.
+- Browser treats this as INTERACTIVE SEEK.
+- Fast and correct.
+- Should NEVER be guarded or modified.
+
+[custom-player.js : line ~53]
+audio.currentTime = Math.max(0, audio.currentTime - 15);
+COMMENT:
+- USER-INITIATED seek (rewind button).
+- Interactive.
+- Safe.
+- Fast.
+- Not related to resume slowness.
+
+[custom-player.js : line ~58]
+audio.currentTime = Math.min(audio.duration || 0, audio.currentTime + 30);
+COMMENT:
+- USER-INITIATED seek (forward button).
+- Interactive.
+- Safe.
+- Fast.
+
+[custom-player.js : line ~64]
+const pct = (audio.currentTime / audio.duration) * 100;
+COMMENT:
+- READ ONLY.
+- Progress UI.
+- Safe.
+
+[custom-player.js : line ~68]
+const cur = formatTime(audio.currentTime);
+COMMENT:
+- READ ONLY.
+- UI formatting.
+- Safe.
+
+[custom-player.js : line ~215]
+if (audio.currentTime >= audio.duration - 0.5) { ... }
+COMMENT:
+- READ ONLY comparison.
+- Does NOT set currentTime.
+- Safe.

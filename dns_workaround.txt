@@ -1,0 +1,117 @@
+🖥️ WINDOWS PC:
+
+Click Start → Settings → Network & Internet
+Click Wi-Fi (or Ethernet if using cable)
+Click on your connected network
+Scroll down to "DNS server assignment" → click Edit
+Switch to Manual
+Turn on IPv4
+Set Preferred DNS: 1.1.1.1
+Set Alternate DNS: 8.8.8.8
+Click Save
+
+
+📱 iPHONE:
+
+Go to Settings → Wi-Fi
+Tap the (i) icon next to your T-Mobile network
+Scroll down to "Configure DNS"
+Switch from Automatic to Manual
+Delete existing entries and add: 1.1.1.1
+Tap Save
+
+
+📱 ANDROID:
+
+Go to Settings → Connections → Wi-Fi
+Long press your T-Mobile network → Manage Network Settings
+Tap Advanced → change IP Settings to Static
+Set DNS 1: 1.1.1.1
+Set DNS 2: 8.8.8.8
+Tap Save
+
+
+📱 FOR MOBILE DATA (T-Mobile):
+
+Go to Settings → Connections → More Connection Settings
+Tap "Private DNS"
+Select "Private DNS provider hostname"
+Type: one.one.one.one
+Tap Save
+
+==================================================
+⭐ 1. Вернуть Wi‑Fi DNS в режим по умолчанию
+Ты менял IP Settings → Static → DNS 1/2.
+
+Чтобы вернуть как было:
+
+📶 Wi‑Fi (T‑Mobile или любой другой роутер)
+Settings → Connections → Wi‑Fi
+
+Долгое нажатие на свою сеть → Manage network settings
+
+Advanced
+
+IP settings → DHCP
+
+Нажать Save
+
+После этого:
+
+DNS снова берётся автоматически от роутера/провайдера
+
+Никаких статических DNS больше нет
+
+⭐ 2. Вернуть Mobile Data DNS (Private DNS) в дефолт
+Ты ставил:
+
+Private DNS → Private DNS provider hostname → one.one.one.one
+
+Чтобы вернуть как было:
+
+📱 Mobile Data (T‑Mobile)
+Settings → Connections
+
+More connection settings
+
+Private DNS
+
+Выбрать: Off или Automatic  
+(в зависимости от модели телефона)
+
+На Samsung обычно:
+
+Private DNS → Off
+
+На Pixel:
+
+Private DNS → Automatic
+
+После этого:
+
+телефон снова использует DNS от T‑Mobile
+
+никаких кастомных DNS нет
+
+
+🖥️ ⭐ Вернуть DNS на Windows в дефолт
+Start → Settings → Network & Internet
+
+Выбери свой тип подключения:
+
+Wi‑Fi (если по воздуху)
+
+Ethernet (если по кабелю)
+
+Нажми на свою активную сеть
+
+Пролистай вниз до DNS server assignment
+
+Нажми Edit
+
+В окне:
+
+Switch to: Automatic (DHCP)
+
+Нажми Save
+

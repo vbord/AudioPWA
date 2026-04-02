@@ -1,16 +1,21 @@
 ﻿// ---------------- TREE SEARCH MODULE ----------------
 
-// раскрывает только папки, у которых есть подпапки
+// раскрывает папку (включая листья) и предков; для листьев подгружает файлы
 async function openParents(row) {
     let node = row.nextElementSibling; // .tree-node
 
     if (node && node.classList.contains("tree-node")) {
-        const hasSubfolders = node.querySelector(".tree-row") !== null;
+        const arrow = row.querySelector(" .arrow");
+        if (arrow) arrow.textContent = "－";
+        node.style.display = "block";
 
-        if (hasSubfolders) {
-            const arrow = row.querySelector(".arrow");
-            arrow.textContent = "－";
-            node.style.display = "block";
+        const hasSubfolders = node.querySelector(".tree-row") !== null;
+        if (!hasSubfolders) {
+            const mp3 = node.querySelector(".mp3-container");
+            if (mp3 && mp3.childElementCount === 0 && typeof loadFilesInto === "function") {
+                const fullPath = getFullPathFromRow(row);
+                await loadFilesInto(fullPath, mp3);
+            }
         }
     }
 
@@ -20,13 +25,9 @@ async function openParents(row) {
         const parentRow = parent.previousElementSibling;
         if (!parentRow) break;
 
-        const hasSubfolders = parent.querySelector(".tree-row") !== null;
-
-        if (hasSubfolders) {
-            const arrow = parentRow.querySelector(".arrow");
-            arrow.textContent = "－";
-            parent.style.display = "block";
-        }
+        const arrow = parentRow.querySelector(".arrow");
+        if (arrow) arrow.textContent = "－";
+        parent.style.display = "block";
 
         parent = parentRow.parentElement;
     }

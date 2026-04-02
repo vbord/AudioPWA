@@ -41,10 +41,11 @@
         </div>
 
         <button class="menu-item" id="refresh-tree-btn">🔄 Refresh</button>
+        <div id="user-email" class="menu-email"></div>
         <button class="menu-item" id="logout-btn">🚪 Logout</button>
         <button class="menu-item" id="clear-site-btn">🧹 Update (V 1.01)</button>
 
-        <div id="user-email" class="menu-email"></div>
+
     </div>
 
     <!-- PLAYER -->
@@ -94,10 +95,10 @@
             <pre id="desc-text"></pre>
         </div>
     </div>
-
-    <script src="app.js?ver=12"></script>
-    <script src="custom-player.js?ver=9a"></script>
-    <script src="tree-search.js?ver=10"></script>
+    <script src="resumePlayer.js?ver=2"></script>
+    <script src="app.js?ver=23"></script>
+    <script src="custom-player.js?ver=10"></script>
+    <script src="tree-search.js?ver=11"></script>
     <script>
         if ("serviceWorker" in navigator) {
             navigator.serviceWorker.register("/AB/service-worker.js", { scope: "/AB/" })

@@ -1,0 +1,141 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Audiobook Player</title>
+
+    <link rel="manifest" href="/AB/manifest.json?v=1-1">
+    <link rel="icon" type="image/png" sizes="64x64" href="/AB/favicon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/AB/icons/icon-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/AB/icons/icon-512.png">
+    <link rel="apple-touch-icon" href="/AB/icons/icon-192.png">
+
+    <meta name="theme-color" content="#000000">
+    <meta name="background-color" content="#000000">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css?ver=10">
+</head>
+
+<body>
+
+    <!-- HEADER BAR -->
+    <div id="header-bar">
+        <div id="now-playing">Nothing playing</div>
+        <button id="menu-btn">☰</button>
+    </div>
+
+    <!-- SIDE MENU -->
+    <div id="side-menu">
+        <button id="menu-close-btn">✖</button>
+
+        <input id="tree-search" type="text" placeholder="Search…" />
+        <button class="menu-item" id="search-go-btn">🔎 Search</button>
+        <button class="menu-item" id="jump-now-btn">🎯 Now Playing</button>
+
+        <div id="volume-row">
+            <span class="vol-icon">🔊</span>
+            <input id="volumeControl" type="range" min="0" max="1" step="0.01">
+        </div>
+
+        <button class="menu-item" id="refresh-tree-btn">🔄 Refresh</button>
+        <div id="user-email" class="menu-email"></div>
+        <button class="menu-item" id="logout-btn">🚪 Logout</button>
+        <button class="menu-item" id="clear-site-btn">🧹 Update (V 1.01)</button>
+
+        <!-- ===== LOCAL MODE CONTROLS ===== -->
+        <div style="padding: 6px 0; margin-top: 10px; display:flex; flex-wrap:wrap; align-items:center; gap:10px;">
+            <div style="flex:0 0 auto;">
+                <label style="display:flex; align-items:center; gap:10px;">
+                    <span style="font-size:1.2em; color:white;">Mode:</span>
+                </label>
+            </div>
+
+            <div style="flex:1 1 150px;">
+                <select id="mode-select"
+                        style="width:100%; padding:4px; font-size:1.2em; background-color:#624dbe82;">
+                    <option value="online">Online</option>
+                    <option value="local">Local</option>
+                </select>
+            </div>
+        </div>
+
+        <button class="menu-item" id="select-local-folder-btn">
+            📁 Select Local Folder
+        </button>
+        <div id="local-folder-name"
+             style="color:white; font-size:1.1em; padding:4px 0; word-break:break-all;">
+            &gt; No folder selected
+        </div>
+        <!-- Hidden folder input -->
+        <input id="local-folder-input"
+               type="file"
+               webkitdirectory
+               directory
+               multiple
+               style="display:none;">
+ 
+    </div>
+
+    <!-- PLAYER -->
+    <div id="player-container">
+        <audio id="player" preload="metadata"></audio>
+
+        <div id="custom-player">
+            <div id="player-buttons">
+                <button id="btn-back">◀◀</button>
+
+                <div id="play-wrapper">
+                    <button id="btn-play">▶</button>
+                    <div id="loading-overlay">Loading…</div>
+                </div>
+
+                <button id="btn-forward">▶▶</button>
+            </div>
+
+            <div id="time-display">0:00 / 0:00</div>
+
+            <div id="progress-bar">
+                <div id="progress-fill"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TREE -->
+    <div id="tree-container"></div>
+
+    <!-- LOGIN MODAL -->
+    <div id="login-modal" style="
+    display: flex;
+    justify-content: center;
+    align-items: center;
+">
+        <div id="login-box">
+            <h2 style="color:#000">Login</h2>
+            <input id="login-email" type="email" placeholder="Enter email">
+            <button id="login-btn">Login</button>
+        </div>
+    </div>
+
+    <!-- DESCRIPTION MODAL -->
+    <div id="desc-modal">
+        <div id="desc-modal-content">
+            <button id="desc-close-btn">✖</button>
+            <pre id="desc-text"></pre>
+        </div>
+    </div>
+
+    <script src="app.js?ver=20"></script>
+    <script src="custom-player.js?ver=20"></script>
+    <script src="tree-search.js?ver=20"></script>
+    <script src="local-mode.js?ver=20"></script>
+    <script>
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.register("/AB/service-worker.js", { scope: "/AB/" })
+                .catch(err => console.error("SW reg failed:", err));
+        }
+    </script>
+</body>
+</html>

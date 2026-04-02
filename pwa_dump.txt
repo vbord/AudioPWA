@@ -1,31 +1,26 @@
 ﻿===== FILE: E:\vs2022\mvc\AudioPWA\publish\app.js =====
-﻿const API = "https://slava.localto.net/api/BooksApi";
-
+﻿
+const API = "https://slava.localto.net/api/BooksApi";
 const treeContainer = document.getElementById("tree-container");
 const player = document.getElementById("player");
-
 let userId = null;
 let userEmail = null;
 let userProgress = {};
 let saveTimer = null;
-
 let currentBook = null;
 let currentFile = null;
 
 // MENU
 const sideMenu = document.getElementById("side-menu");
 const menuBtn = document.getElementById("menu-btn");
-
 menuBtn.onclick = () => {
     sideMenu.classList.toggle("open");
     document.body.classList.toggle("menu-open", sideMenu.classList.contains("open"));
 };
-
 document.getElementById("menu-close-btn").onclick = () => {
     sideMenu.classList.remove("open");
     document.body.classList.remove("menu-open");
 };
-
 document.querySelectorAll("#side-menu .menu-item").forEach(btn => {
     btn.addEventListener("click", () => {
         sideMenu.classList.remove("open");
@@ -33,13 +28,11 @@ document.querySelectorAll("#side-menu .menu-item").forEach(btn => {
 });
 
 // ---------------- CONTROL DISABLE / ENABLE ----------------
-
 function disablePlayerControls() {
     document.getElementById("btn-back").disabled = true;
     document.getElementById("btn-forward").disabled = true;
     document.getElementById("btn-play").disabled = true;
 }
-
 function enablePlayerControls() {
     document.getElementById("btn-back").disabled = false;
     document.getElementById("btn-forward").disabled = false;
@@ -47,7 +40,6 @@ function enablePlayerControls() {
 }
 
 // ---------------- LOADING OVERLAY ----------------
-
 function showLoading(msg = "Loading…") {
     const el = document.getElementById("loading-overlay");
     if (!el) return;
@@ -55,64 +47,52 @@ function showLoading(msg = "Loading…") {
     el.style.display = "block";
     el.style.opacity = "1";
 }
-
 function hideLoading() {
     const el = document.getElementById("loading-overlay");
     if (!el) return;
     el.style.opacity = "0";
     setTimeout(() => el.style.display = "none", 200);
 }
-
 player.addEventListener("waiting", () => {
     showLoading("Loading…");
     disablePlayerControls();
 });
-
 player.addEventListener("canplay", () => {
     hideLoading();
     enablePlayerControls();
 });
-
 player.addEventListener("playing", () => {
     hideLoading();
     enablePlayerControls();
 });
 
 // ---------------- LOGIN ----------------
-
 function showLogin() {
     document.getElementById("login-modal").style.display = "flex";
 }
-
 function hideLogin() {
     document.getElementById("login-modal").style.display = "none";
 }
-
 document.getElementById("login-btn").onclick = async () => {
     const email = document.getElementById("login-email").value.trim();
     if (!email) return;
-
     const res = await fetch(`${API}/Login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email })
     });
-
     const data = await res.json();
     userId = data.userId;
     userEmail = email;
-
     localStorage.setItem("ab_userId", userId);
     localStorage.setItem("ab_email", email);
     updateMenuEmail();
     hideLogin();
     loadProgress();
 };
-
 function initLogin() {
     const savedId = localStorage.getItem("ab_userId");
     const savedEmail = localStorage.getItem("ab_email");
-
     if (savedId && savedEmail) {
         userId = savedId;
         userEmail = savedEmail;
@@ -124,7 +104,6 @@ function initLogin() {
 }
 
 // ---------------- LOAD PROGRESS ----------------
-
 async function loadProgress() {
     const res = await fetch(`${API}/GetProgress?userId=${userId}`);
     if (res.ok) {
@@ -135,14 +114,11 @@ async function loadProgress() {
 }
 
 // ---------------- LOAD BOOKS ----------------
-
 async function loadBooks() {
     const res = await fetch(`${API}/GetBooks`);
     const books = await res.json();
-
     const paths = books.map(b => b.name);
     const tree = buildTree(paths);
-
     treeContainer.innerHTML = "";
     renderTree(tree, treeContainer, "");
 
@@ -152,7 +128,6 @@ async function loadBooks() {
         setTimeout(() => openCurrentFolderAndRemark(), 0);
     }
 }
-
 function buildTree(paths) {
     const root = {};
     paths.forEach(path => {
@@ -167,7 +142,6 @@ function buildTree(paths) {
 }
 
 // ---------------- COVER LOADER ----------------
-
 async function loadCover(bookPath) {
     const res = await fetch(`${API}/GetBookCover?book=${encodeURIComponent(bookPath)}`);
     const cover = await res.json();
@@ -176,7 +150,6 @@ async function loadCover(bookPath) {
 }
 
 // ---------------- TREE RENDERING ----------------
-
 function renderTree(node, container, currentPath) {
     Object.keys(node).forEach(key => {
         const fullPath = currentPath ? `${currentPath}/${key}` : key;
@@ -187,14 +160,12 @@ function renderTree(node, container, currentPath) {
         // small cover icon
         const icon = document.createElement("img");
         icon.className = "folder-icon hidden";
-
         loadCover(fullPath).then(url => {
             if (url) {
                 icon.src = url;
                 icon.classList.remove("hidden");
             }
         });
-
         icon.onerror = () => icon.classList.add("hidden");
 
         const arrow = document.createElement("span");
@@ -219,7 +190,6 @@ function renderTree(node, container, currentPath) {
         const coverWrapper = document.createElement("div");
         coverWrapper.className = "book-cover-wrapper";
         coverWrapper.style.display = "none";
-
         const coverImg = document.createElement("img");
         coverImg.className = "book-cover";
         coverImg.style.display = "none";
@@ -228,7 +198,6 @@ function renderTree(node, container, currentPath) {
             coverWrapper.style.display = "none";
         };
         coverWrapper.appendChild(coverImg);
-
         childContainer.appendChild(coverWrapper);
 
         renderTree(node[key], childContainer, fullPath);
@@ -264,7 +233,6 @@ function renderTree(node, container, currentPath) {
                 childContainer.style.display = "none";
             }
         };
-
         name.onclick = async () => {
             arrow.textContent = "－";
             childContainer.style.display = "block";
@@ -280,7 +248,6 @@ function renderTree(node, container, currentPath) {
             }
 
             document.querySelectorAll(".file-item").forEach(el => el.remove());
-
             await loadFilesInto(fullPath, mp3Container);
 
             // NEW: if this is the current book, re-mark now-playing
@@ -292,8 +259,9 @@ function renderTree(node, container, currentPath) {
             setTimeout(() => autoPlayBook(fullPath), 200);
         };
 
-        row.appendChild(icon);
+        // *** ORDER FIX: arrow → small cover icon → folder name → info (DOM append order) ***
         row.appendChild(arrow);
+        row.appendChild(icon);
         row.appendChild(name);
         row.appendChild(infoIconInline);
 
@@ -303,33 +271,29 @@ function renderTree(node, container, currentPath) {
 }
 
 // ---------------- DESCRIPTION LOADER ----------------
-
 async function openDescription(fullPath) {
     const modal = document.getElementById("desc-modal");
     const textEl = document.getElementById("desc-text");
-
     const url = `https://slava.localto.net/Uploads/Audio/ABOOKS/${fullPath}/description.txt`;
 
     let text = "";
-
     try {
         const res = await fetch(url);
         if (res.ok) {
             text = await res.text();
         } else {
-            text = `No description available for:\n${fullPath}`;
+            text = `No description available for:
+${fullPath}`;
         }
     } catch (e) {
-        text = `No description available for:\n${fullPath}`;
+        text = `No description available for:
+${fullPath}`;
     }
-
     textEl.textContent = text;
     modal.style.display = "flex";
 }
-
 document.getElementById("desc-close-btn").onclick = () =>
     document.getElementById("desc-modal").style.display = "none";
-
 document.getElementById("desc-modal").onclick = e => {
     if (e.target.id === "desc-modal") {
         document.getElementById("desc-modal").style.display = "none";
@@ -337,22 +301,17 @@ document.getElementById("desc-modal").onclick = e => {
 };
 
 // ---------------- LOAD MP3 FILES ----------------
-
 async function loadFilesInto(bookPath, mp3Container) {
     const res = await fetch(`${API}/GetBookFiles?book=${encodeURIComponent(bookPath)}`);
     const files = await res.json();
-
     mp3Container.innerHTML = "";
-
     files.forEach(f => {
         const div = document.createElement("div");
         div.className = "file-item";
         div.textContent = f;
         div.dataset.book = bookPath;
         div.dataset.file = f;
-
         div.onclick = () => playFile(bookPath, f);
-
         mp3Container.appendChild(div);
     });
 
@@ -364,7 +323,6 @@ async function loadFilesInto(bookPath, mp3Container) {
 }
 
 // ---------------- NOW PLAYING HIGHLIGHT ----------------
-
 function markNowPlaying(book, file, opts = { scroll: false }) {
     const items = document.querySelectorAll(".file-item");
     items.forEach(i => i.classList.remove("now-playing-item"));
@@ -372,7 +330,6 @@ function markNowPlaying(book, file, opts = { scroll: false }) {
     const match = [...items].find(i =>
         i.dataset.book === book && i.dataset.file === file
     );
-
     if (match) {
         match.classList.add("now-playing-item");
         if (opts.scroll) {
@@ -383,7 +340,6 @@ function markNowPlaying(book, file, opts = { scroll: false }) {
         }
     }
 }
-
 function highlightFile(file) {
     document.querySelectorAll(".file-item").forEach(el => el.classList.remove("file-active"));
     const match = [...document.querySelectorAll(".file-item")]
@@ -392,10 +348,8 @@ function highlightFile(file) {
 }
 
 // ---------------- PLAYBACK ----------------
-
 function playFile(book, file) {
     const url = `https://slava.localto.net/Uploads/Audio/ABOOKS/${book}/${file}`;
-
     currentBook = book;
     currentFile = file;
 
@@ -412,13 +366,11 @@ function playFile(book, file) {
     if (hasSaved) {
         showLoading("Loading…");
         disablePlayerControls();
-
         player.addEventListener("canplay", () => {
             hideLoading();
             enablePlayerControls();
             player.play().catch(err => console.warn("Play error:", err));
         }, { once: true });
-
         player.currentTime = userProgress[book].position;
     } else {
         player.play().catch(err => console.warn("Play error:", err));
@@ -426,10 +378,8 @@ function playFile(book, file) {
 
     highlightFile(file);
     markNowPlaying(book, file, { scroll: true });
-
     document.getElementById("now-playing").textContent =
         `📘 ${book} — 🎵 ${file}`;
-
     startSaving(book, file);
 
     // NEW: whenever a file starts, open its folder path and re-mark
@@ -439,18 +389,14 @@ function playFile(book, file) {
 }
 
 // ---------------- SAVE PROGRESS ----------------
-
 function startSaving(book, file) {
     if (saveTimer) clearInterval(saveTimer);
-
     saveTimer = setInterval(() => {
         saveProgress(book, file, player.currentTime);
     }, 5000);
 }
-
 async function saveProgress(book, file, pos) {
     userProgress[book] = { file, position: pos, updated: new Date().toISOString() };
-
     await fetch(`${API}/SaveProgress`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -464,36 +410,29 @@ async function saveProgress(book, file, pos) {
 }
 
 // ---------------- CONTINUOUS PLAYBACK ----------------
-
 function playNextFromDom(currentFileName, currentBookPath) {
     const items = [...document.querySelectorAll(".file-item")];
     const idx = items.findIndex(el => el.textContent === currentFileName);
-
     if (idx >= 0 && idx < items.length - 1) {
         items[idx + 1].click();
         return;
     }
-
     const nextBook = getNextBookPath(currentBookPath);
     if (!nextBook) return;
-
     setTimeout(() => autoExpandAndPlay(nextBook), 300);
 }
 
 // ---------------- AUTO PLAY BOOK ----------------
-
 async function autoPlayBook(book) {
     if (userProgress[book]) {
         playFile(book, userProgress[book].file);
         return;
     }
-
     const items = [...document.querySelectorAll(".file-item")];
     if (items.length > 0) items[0].click();
 }
 
 // ---------------- RESUME LAST BOOK/FILE ----------------
-
 function resumeLastBookAndFile() {
     if (!userProgress || Object.keys(userProgress).length === 0) {
         return;
@@ -501,7 +440,6 @@ function resumeLastBookAndFile() {
 
     let lastBook = null;
     let lastTime = 0;
-
     for (const [book, data] of Object.entries(userProgress)) {
         const t = new Date(data.updated).getTime();
         if (t > lastTime) {
@@ -509,15 +447,12 @@ function resumeLastBookAndFile() {
             lastBook = book;
         }
     }
-
     if (!lastBook) return;
 
     const file = userProgress[lastBook].file;
     const pos = userProgress[lastBook].position;
-
     expandAndPlay(lastBook, file, pos);
 }
-
 async function expandAndPlay(bookPath, fileName, position) {
     const parts = bookPath.split("/");
     let container = treeContainer;
@@ -525,7 +460,6 @@ async function expandAndPlay(bookPath, fileName, position) {
     for (const part of parts) {
         const row = [...container.querySelectorAll(".tree-row")]
             .find(r => r.querySelector(".folder-name").textContent === part);
-
         if (!row) continue;
 
         const arrow = row.querySelector(".arrow");
@@ -535,12 +469,10 @@ async function expandAndPlay(bookPath, fileName, position) {
             arrow.textContent = "－";
             nextContainer.style.display = "block";
         }
-
         container = nextContainer;
     }
 
     document.querySelectorAll(".file-item").forEach(el => el.remove());
-
     const mp3Container = container.querySelector(".mp3-container");
     if (mp3Container) {
         await loadFilesInto(bookPath, mp3Container);
@@ -548,13 +480,11 @@ async function expandAndPlay(bookPath, fileName, position) {
 
     const target = [...document.querySelectorAll(".file-item")]
         .find(el => el.textContent === fileName);
-
     if (target) {
         target.click();
         if (typeof position === "number" && position > 0) {
             showLoading("Loading…");
             disablePlayerControls();
-
             player.addEventListener("canplay", () => {
                 hideLoading();
                 enablePlayerControls();
@@ -568,7 +498,6 @@ async function expandAndPlay(bookPath, fileName, position) {
 }
 
 // ----------------- NEW HELPERS: expand & remark -----------------
-
 /**
  * Expand a path from root to its leaf folder, opening each level.
  * Returns the leaf container (the .tree-node for the last segment),
@@ -576,7 +505,6 @@ async function expandAndPlay(bookPath, fileName, position) {
  */
 function expandPathTo(bookPath) {
     if (!bookPath) return null;
-
     const parts = bookPath.split("/");
     let container = treeContainer;
 
@@ -587,7 +515,6 @@ function expandPathTo(bookPath) {
 
         const arrow = row.querySelector(".arrow");
         const nextContainer = row.nextElementSibling;
-
         if (nextContainer && nextContainer.style.display === "none") {
             arrow.textContent = "－";
             nextContainer.style.display = "block";
@@ -633,7 +560,6 @@ async function openCurrentFolderAndRemark() {
 }
 
 // ---------------- UI HOOKS FOR SEARCH & NOW PLAYING ----------------
-
 const searchInput = document.getElementById("tree-search");
 if (searchInput) {
     searchInput.addEventListener("input", () => {
@@ -641,7 +567,6 @@ if (searchInput) {
         searchTree(term);
     });
 }
-
 const searchBtn = document.getElementById("search-go-btn");
 if (searchBtn) {
     searchBtn.onclick = () => {
@@ -649,7 +574,6 @@ if (searchBtn) {
         searchTree(term);
     };
 }
-
 const jumpNowBtn = document.getElementById("jump-now-btn");
 if (jumpNowBtn) {
     jumpNowBtn.onclick = () => {
@@ -663,14 +587,12 @@ if (jumpNowBtn) {
 }
 
 // ---------------- REFRESH TREE ----------------
-
 document.getElementById("refresh-tree-btn").onclick = () => {
     treeContainer.innerHTML = "";
     loadBooks();
 };
 
 // ---------------- LOGOUT ----------------
-
 document.getElementById("logout-btn").onclick = () => {
     localStorage.removeItem("ab_userId");
     localStorage.removeItem("ab_email");
@@ -678,51 +600,42 @@ document.getElementById("logout-btn").onclick = () => {
 };
 
 // ---------------- CLEAR SITE DATA ----------------
-
 document.getElementById("clear-site-btn").onclick = async () => {
     localStorage.clear();
-
     if ('caches' in window) {
         const names = await caches.keys();
         for (const name of names) {
             await caches.delete(name);
         }
     }
-
     if (navigator.serviceWorker) {
         const regs = await navigator.serviceWorker.getRegistrations();
         for (const reg of regs) {
             await reg.unregister();
         }
     }
-
     alert("Site data cleared. Reloading…");
     location.reload();
 };
 
 // ---------------- INIT ----------------
-
 initLogin();
 
 // ---------------- KEYBOARD DETECTOR ----------------
-
 let keyboardOpen = false;
-
 const isMobile = matchMedia("(pointer: coarse)").matches;
-
 if (isMobile) {
-    const searchInput = document.getElementById("tree-search");
-
-    if (searchInput) {
-        searchInput.addEventListener("focus", () => {
+    const searchInput2 = document.getElementById("tree-search");
+    if (searchInput2) {
+        searchInput2.addEventListener("focus", () => {
             keyboardOpen = true;
         });
-
-        searchInput.addEventListener("blur", () => {
+        searchInput2.addEventListener("blur", () => {
             keyboardOpen = false;
         });
     }
 }
+
 // Auto-expand a book path and then start playback for that book.
 // It opens each segment of the path, shows the big cover, loads the files,
 // then calls autoPlayBook(bookPath).
@@ -781,6 +694,7 @@ async function autoExpandAndPlay(bookPath) {
     // Start playback for this book (uses your existing logic to resume or play first)
     await autoPlayBook(bookPath);
 }
+
 
 ===== FILE: E:\vs2022\mvc\AudioPWA\publish\custom-player.js =====
 ﻿/* ================================================
@@ -1016,7 +930,83 @@ document.addEventListener("DOMContentLoaded", updateMenuEmail);
 
 
 ===== FILE (base64): E:\vs2022\mvc\AudioPWA\publish\favicon.png =====
-iV...gg==
+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
 
 ===== FILE: E:\vs2022\mvc\AudioPWA\publish\index.html =====
 ﻿<!DOCTYPE html>
@@ -1025,8 +1015,8 @@ iV...gg==
     <meta charset="UTF-8">
     <title>Audiobook Player</title>
 
-    <link rel="manifest" href="/ab/manifest.json?v=1-1">
-    <link rel="icon" type="image/png" sizes="64x64" href="/favicon.png">
+    <link rel="manifest" href="/AB/manifest.json?v=1-1">
+    <link rel="icon" type="image/png" sizes="64x64" href="/AB/favicon.png">
     <link rel="icon" type="image/png" sizes="192x192" href="/AB/icons/icon-192.png">
     <link rel="icon" type="image/png" sizes="512x512" href="/AB/icons/icon-512.png">
     <link rel="apple-touch-icon" href="/AB/icons/icon-192.png">
@@ -1037,7 +1027,7 @@ iV...gg==
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="styles.css?ver=8">
+    <link rel="stylesheet" href="styles.css?ver=10">
 </head>
 
 <body>
@@ -1070,7 +1060,7 @@ iV...gg==
 
     <!-- PLAYER -->
     <div id="player-container">
-        <audio id="player"></audio>
+        <audio id="player" preload="metadata"></audio>
 
         <div id="custom-player">
             <div id="player-buttons">
@@ -1127,7 +1117,6 @@ iV...gg==
     </script>
 </body>
 </html>
-
 
 
 ===== FILE: E:\vs2022\mvc\AudioPWA\publish\manifest.json =====
@@ -1236,6 +1225,7 @@ body {
     }
 
 /* HIDE NATIVE AUDIO */
+
 audio {
     width: 0;
     height: 0;
@@ -1255,7 +1245,6 @@ audio {
 /* CUSTOM PLAYER */
 #player-container {
     background: #7c79799c;
-    
 }
 
 #custom-player {
@@ -1285,7 +1274,6 @@ audio {
     }
 
 /* PROGRESS BAR */
-/* PROGRESS BAR */
 #progress-bar {
     width: 100%;
     height: 16px;
@@ -1295,7 +1283,6 @@ audio {
     background: #403b69;
     box-shadow: inset 0 2px 4px rgba(0,0,0,0.45), inset 0 -1px 2px rgba(255,255,255,0.15);
 }
-
 /* FILLED PART (before position) */
 #progress-fill {
     height: 100%;
@@ -1305,7 +1292,6 @@ audio {
     background: #99d399;
     box-shadow: 0 2px 4px rgba(0,0,0,0.6), inset 0 2px 3px rgba(255,255,255,0.35), inset 0 -2px 3px rgba(0,0,0,0.4);
 }
-
 
 /* TIME DISPLAY */
 #time-display {
@@ -1328,6 +1314,7 @@ audio {
     color: black;
     margin: 10px 20px;
 }
+
 #login-modal {
     position: fixed;
     top: 0;
@@ -1346,11 +1333,15 @@ audio {
 
 /* ICONS */
 .folder-icon {
-    width: 1em;
-    height: 1em;
+    width: 1.2em; /* fixed icon column so arrows never jump */
+    height: 1.2em;
+    object-fit: cover; /* or 'contain' */
+    display: inline-block;
 }
 
- 
+    .folder-icon.hidden {
+        visibility: hidden; /* reserve space; not display:none */
+    }
 
 /* LOADING OVERLAY — KEEP EXACTLY AS BASELINE */
 #loading-overlay {
@@ -1484,10 +1475,27 @@ audio {
 .tree-row {
     position: relative;
     display: flex;
-    align-items: center;
+    align-items: self-start;
     gap: 6px;
     padding: 4px 0;
 }
+    /* Enforce visual order regardless of DOM order */
+    .tree-row .arrow {
+        order: 1;
+    }
+
+    .tree-row .folder-icon {
+        order: 2;
+    }
+
+    .tree-row .folder-name {
+        order: 3;
+    }
+
+    .tree-row .desc-icon-inline {
+        order: 4;
+    }
+
 
     .tree-row::before {
         content: "";
@@ -1506,6 +1514,7 @@ audio {
 .folder-name {
     flex-grow: 1;
     word-break: break-all;
+    background: #2d2d2d;
 }
 
 /* FILE ITEMS */
@@ -1638,7 +1647,6 @@ audio {
     font-size: 1em;
 }
 
-
 /* BIG COVER */
 .book-cover-wrapper {
     margin-top: 3px;
@@ -1696,8 +1704,6 @@ audio {
 #play-wrapper {
     width: 40%;
 }
- 
-
 
 #play-wrapper {
     position: relative;
@@ -1707,7 +1713,6 @@ audio {
 #btn-play {
     width: 100%;
 }
-
 
 #desc-text {
     white-space: pre-wrap !important; /* сохраняет \n, но разрешает переносы */
@@ -1731,7 +1736,7 @@ audio {
     text-align: center;
     word-break: break-all;
     height: auto;
-    font-size:1.2em;
+    font-size: 1.2em;
 }
 
 .arrow {
@@ -1747,7 +1752,9 @@ audio {
     line-height: 1;
     cursor: pointer;
     min-width: 1.2em;
+    align-self: flex-start;
 }
+
 
 ===== FILE: E:\vs2022\mvc\AudioPWA\publish\tree-search.js =====
 ﻿// ---------------- TREE SEARCH MODULE ----------------
